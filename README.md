@@ -6,33 +6,51 @@ A high-performance, backend-free vacation rental website built with pure HTML5, 
 
 - **Direct human communication** over automated booking systems
 - **Zero dependencies** — no npm, no bundlers, no transpilers
-- **Instant deployment** — upload to any static host (Netlify, Vercel, GitHub Pages, Cloudflare Pages, or plain FTP)
+- **Instant deployment** — upload to any static host (Netlify, Vercel, GitHub Pages, Cloudflare Pages, plain FTP, or Apache)
 - **Email-first workflow** — inquiries go straight to the owner's Gmail via Formspree
 
 ## Project Structure
 
 ```
 VillaCaterina-web/
-├── index.html              # Homepage with date picker & pricing engine
-├── contact.html            # Auto-filled inquiry form
+├── index.html              # Homepage with booking widget & pricing engine
+├── info.html               # "The Villa" page — amenities, gallery slideshow
+├── reviews.html            # Guest reviews: Booking.com, Airbnb, Google Maps
+├── contact.html            # Auto-filled booking inquiry form
+├── .htaccess               # Apache security hardening (CSP, HTTPS, headers)
+├── _headers                # Netlify / Cloudflare security headers mirror
 ├── css/
-│   └── styles.css          # Complete stylesheet (responsive)
+│   └── styles.css          # Single stylesheet (responsive, dark accents)
 ├── js/
-│   ├── booking.js          # Pricing logic, validation, iCal sync, redirect
-│   └── contact.js          # URL param parsing, form autofill, submission
-└── assets/                 # Images (copied from legacy codebase)
-    ├── main.jpg
-    ├── villa-itself.jpg
-    ├── lake.jpg
-    └── inside/
-    └── facilities/
+│   ├── booking.js          # Pricing engine, iCal sync, validation, redirect
+│   ├── calendar.js         # Custom two-month calendar widget
+│   ├── contact.js          # URL param parsing, auto-fill, form submission
+│   ├── reviews.js          # Hardcoded review data + rendering by platform
+│   ├── gallery.js          # Villa interior image slideshow (arrows + keys)
+│   └── nav.js              # Shared mobile hamburger toggle
+└── assets/
+    ├── main.jpg            # Hero image
+    ├── logo.jpg            # Brand logo
+    ├── villa-itself.jpg    # Exterior photo
+    ├── lake.jpg            # Lake Como view
+    ├── inside/             # Interior gallery photos (~35 images)
+    └── facilities/         # Amenity cards (laundry, ferry, parking)
 ```
+
+## Pages
+
+| Page | File | Purpose |
+|------|------|---------|
+| Home | `index.html` | Hero, booking widget (calendar + pricing), overview |
+| Villa | `info.html` | Amenities (laundry, ferry, parking), interior gallery slideshow |
+| Reviews | `reviews.html` | Grouped guest reviews from Booking.com (9.8/10), Airbnb (4.67/5), Google Maps (5.0/5) |
+| Contact | `contact.html` | Auto-filled inquiry form with booking summary |
 
 ## Setup Instructions
 
 ### 1. Configure Formspree (for email delivery)
 
-Replace `YOUR_FORM_ID` in `contact.html` line 47:
+Replace `YOUR_FORM_ID` in `contact.html` line 109:
 
 ```html
 <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
@@ -44,7 +62,7 @@ Replace `YOUR_FORM_ID` in `contact.html` line 47:
 3. Copy your form's ID (e.g., `xpzglkjq`)
 4. Replace `YOUR_FORM_ID` with that ID
 
-**Fallback:** If Formspree is not configured, the form opens the user's email client with a pre-filled `mailto:` link.
+**Fallback:** If Formspree is not configured (URL still contains `YOUR_FORM_ID`), the contact form opens the user's email client with a pre-filled `mailto:` link instead of submitting via fetch.
 
 ---
 
@@ -55,7 +73,7 @@ To block dates that are already booked on Booking.com:
 1. Log into your [Booking.com Extranet](https://admin.booking.com)
 2. Go to **Calendar** → **Sync calendars**
 3. Copy the **export URL** (ends in `.ics`)
-4. Paste it into `js/booking.js` line 18:
+4. Paste it into `js/booking.js` line 22 (inside the `CONFIG.ICAL_URL` field):
 
 ```javascript
 ICAL_URL: 'https://ical.booking.com/v1/export?t=YOUR_TOKEN_HERE',
@@ -102,7 +120,7 @@ Upload all files to your web host's `public_html` directory via FTP.
 ## Core Features
 
 ### 1. Seasonal Pricing Engine
-The pricing logic in `js/booking.js` iterates through each individual night and applies the correct rate based on this tier matrix:
+The pricing logic in `js/booking.js` (`getNightRate()` function, lines 38–55) iterates through each individual night and applies the correct rate based on this tier matrix:
 
 | Period | Rate / night |
 |--------|--------------|
@@ -115,21 +133,49 @@ The pricing logic in `js/booking.js` iterates through each individual night and 
 | August 16–31 | €700 |
 | September | €600 |
 | October | €500 |
-| November – March | **Closed** |
+| November – March | **Closed** (€0 — stay rejected) |
 
-### 2. Validation Rules
-- **Minimum stay:** 3 nights (enforced in `booking.js` line 162)
-- **Operational season:** April–October only (configurable line 14)
-- **No same-day turnover:** If a guest checks out on Day X, that day is blocked for incoming guests (iCal parser applies this rule, line 88)
+Prices animate with a counter effect when displayed (ease-out cubic, ~800ms).
+
+### 2. Custom Calendar Widget
+`js/calendar.js` renders a two-month grid with Monday-based weeks. Each day cell is color-coded:
+- Green = available
+- Red = already booked (from iCal)
+- Grey = closed season or past date
+- Highlighted = currently selected check-in/check-out range
+
+Navigation arrows and month title let users browse forward/backward.
+
+### 3. Validation Rules
+- **Minimum stay:** 3 nights (configurable via `CONFIG.MIN_STAY` in `booking.js` line 15)
+- **Operational season:** April–October only (configurable via `CONFIG.OPEN_MONTHS` line 17)
+- **No same-day turnover:** If a guest checks out on Day X, that day is also blocked for incoming guests (iCal parser marks the checkout date, `parseICal()` in `booking.js` line 191)
 - **Future dates only:** Check-in must be today or later
+- **Max guests:** 8 total (adults + children), at least 1 adult required
 
-### 3. State Transfer via URL Parameters
+### 4. iCal Availability Sync
+Booking.com's `.ics` feed is fetched via CORS proxy at page load. Two public proxies are tried in order (`corsproxy.io`, `api.allorigins.win`). The parsed VEVENT date ranges populate a `Set` of blocked dates that the calendar widget reads to grey out occupied days.
+
+### 5. State Transfer via URL Parameters
 When the user completes a valid selection, they're redirected to:
 ```
 contact.html?checkin=2026-07-10&checkout=2026-07-17&guests=4&price=5040&nights=7
 ```
 
-The contact page reads these params (`js/contact.js` line 11) and auto-fills a beautifully formatted inquiry message.
+The contact page reads these params (`js/contact.js`), validates each one against a strict regex (dates must be real YYYY-MM-DD, numbers must be bounded integers), populates hidden form fields and a booking summary banner, and pre-fills a formatted inquiry message.
+
+### 6. Guest Reviews Page
+`reviews.html` + `js/reviews.js` render hardcoded reviews grouped by platform (Booking.com, Airbnb, Google Maps) with star ratings, rendered into a masonry-style grid. Scores: Booking.com 9.8/10, Airbnb 4.67/5, Google Maps 5.0/5.
+
+### 7. Villa Info Page & Gallery
+`info.html` + `js/gallery.js` provide an interior photo slideshow with previous/next buttons, thumbnail strip, and keyboard arrow-key navigation. Three amenity cards (laundry, ferry access, parking) are displayed above.
+
+### 8. Security Hardening
+- **Content-Security-Policy** meta tag on every page (no external scripts, no iframes, limited connect-src)
+- **Honeypot anti-spam field** on the contact form (hidden from users, catches bots)
+- **Input validation** on URL parameters (regex-based, rejects malformed/malicious values)
+- **`_headers`** file for Netlify/Cloudflare — mirrors the same security headers
+- **`.htaccess`** for Apache — forces HTTPS, disables directory listing, blocks `.git` and dotfiles, sets HSTS/X-Frame-Options/CORS headers
 
 ---
 

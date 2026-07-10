@@ -12,11 +12,36 @@
 
   const params = new URLSearchParams(window.location.search);
 
-  const checkin    = params.get('checkin');
-  const checkout   = params.get('checkout');
-  const guests     = params.get('guests');
-  const price      = params.get('price');
-  const nights     = params.get('nights');
+  // ──────────────────────────────────────────────
+  // VALIDATE URL PARAMETERS
+  // These values come from the URL and are fully attacker-controlled
+  // (anyone can craft a link). Only accept values in the exact shape we
+  // produced, and reject anything else so a malicious link cannot inject
+  // arbitrary content into the auto-filled inquiry.
+  // ──────────────────────────────────────────────
+
+  /** Return the value only if it matches YYYY-MM-DD and is a real date. */
+  function validIsoDate(v) {
+    if (!v || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return null;
+    const [y, m, d] = v.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d) return null;
+    return v;
+  }
+
+  /** Return a bounded positive integer string, or null. */
+  function validInt(v, min, max) {
+    if (!v || !/^\d{1,7}$/.test(v)) return null;
+    const n = Number(v);
+    if (n < min || n > max) return null;
+    return String(n);
+  }
+
+  const checkin    = validIsoDate(params.get('checkin'));
+  const checkout   = validIsoDate(params.get('checkout'));
+  const guests     = validInt(params.get('guests'), 1, 8);
+  const price      = validInt(params.get('price'), 0, 1000000);
+  const nights     = validInt(params.get('nights'), 1, 365);
 
   // ──────────────────────────────────────────────
   // DATE FORMATTING
@@ -123,13 +148,28 @@
       return;
     }
 
-    if (!email || !email.includes('@')) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       showFeedback('Please enter a valid email address.', 'error');
       return;
     }
 
     if (!message || message.trim().length < 10) {
       showFeedback('Please include a message with your inquiry.', 'error');
+      return;
+    }
+
+    if (message.length > 5000) {
+      showFeedback('Your message is too long. Please shorten it.', 'error');
+      return;
+    }
+
+    // ── Honeypot anti-spam check ──
+    // Bots fill every field; humans never see this one. If it's populated,
+    // silently drop the submission.
+    const honeypot = formData.get('company');
+    if (honeypot) {
+      showFeedback('Thank you! Your inquiry has been sent.', 'success');
+      $form.reset();
       return;
     }
 
