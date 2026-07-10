@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact Villa Caterina to book your Lake Como vacation. Send us a direct inquiry.">
+  <title>Contact - Villa Caterina</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-content">
+      <h1 class="logo">Villa Caterina</h1>
+      <nav>
+        <a href="index.html">Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="contact-hero">
+      <img src="assets/lake.jpg" alt="Lake Como" class="contact-hero-image">
+      <div class="contact-hero-overlay">
+        <h1>Get in Touch</h1>
+      </div>
+    </section>
+
+    <section class="contact-section">
+      <div class="container contact-grid">
+        <!-- Contact Info -->
+        <div class="contact-info">
+          <h2>We'd Love to Hear From You</h2>
+          <p>
+            Send us a direct inquiry and we'll respond personally with availability 
+            confirmation and any special requests you may have. No automated systems — 
+            just human-to-human communication.
+          </p>
+
+          <div class="contact-details">
+            <div class="contact-item">
+              <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <div>
+                <h3>Address</h3>
+                <p>14 Via Roma, 22011 Griante Cadenabia, Italy</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <div>
+                <h3>Email</h3>
+                <p><a href="mailto:villacaterina2020@gmail.com">villacaterina2020@gmail.com</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form-wrapper">
+          <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+            <h2>Send Inquiry</h2>
+            
+            <div class="form-field">
+              <label for="form-email">Your Email Address</label>
+              <input type="email" id="form-email" name="email" required>
+            </div>
+
+            <div class="form-field">
+              <label for="form-name">Your Name</label>
+              <input type="text" id="form-name" name="name">
+            </div>
+
+            <div class="form-field">
+              <label for="form-message">Your Message</label>
+              <textarea id="form-message" name="message" rows="8"></textarea>
+            </div>
+
+            <input type="hidden" name="_subject" value="New Booking Inquiry - Villa Caterina">
+
+            <button type="submit" class="btn-primary btn-full">Send Inquiry</button>
+
+            <div id="form-feedback" class="form-feedback"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Villa Caterina. All rights reserved.</p>
+      <p>14 Via Roma, 22011 Griante Cadenabia, Italy</p>
+      <p><a href="mailto:villacaterina2020@gmail.com">villacaterina2020@gmail.com</a></p>
+    </div>
+  </footer>
+
+  <script src="js/contact.js"></script>
+</body>
+</html>

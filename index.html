@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Villa Caterina - Luxury vacation rental on Lake Como. Book your stay in our historic villa with stunning lake views.">
+  <title>Villa Caterina - Lake Como Luxury Retreat</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-content">
+      <h1 class="logo">Villa Caterina</h1>
+      <nav>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <img src="assets/main.jpg" alt="Villa Caterina Lake Como" class="hero-image">
+      <div class="hero-overlay">
+        <h1>Your Private Retreat on Lake Como</h1>
+        <p>A historic villa where timeless elegance meets modern comfort</p>
+      </div>
+    </section>
+
+    <!-- Booking Widget -->
+    <section class="booking-section">
+      <div class="booking-widget">
+        <h2>Check Availability</h2>
+        
+        <div class="booking-form">
+          <div class="form-group">
+            <label for="checkin">Check-in</label>
+            <input type="date" id="checkin" class="date-input">
+          </div>
+          
+          <div class="form-group">
+            <label for="checkout">Check-out</label>
+            <input type="date" id="checkout" class="date-input">
+          </div>
+          
+          <div class="form-group">
+            <label for="guests">Guests</label>
+            <input type="number" id="guests" min="1" max="12" value="2" class="guest-input">
+          </div>
+          
+          <div class="price-display" id="price-display" style="display: none;">
+            <div class="price-label">Total Price</div>
+            <div class="price-amount" id="price-amount">€0</div>
+            <div class="price-breakdown" id="price-breakdown"></div>
+          </div>
+          
+          <button id="check-availability-btn" class="btn-primary" disabled>
+            Select Dates
+          </button>
+        </div>
+        
+        <div class="booking-message" id="booking-message"></div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section">
+      <div class="container">
+        <h2>A Timeless Escape</h2>
+        <p>
+          Nestled on the shores of Lake Como, Villa Caterina offers an unparalleled 
+          experience of Italian luxury. Our historic villa combines centuries of heritage 
+          with contemporary amenities, providing the perfect sanctuary for discerning travelers 
+          seeking privacy, beauty, and authentic Italian charm.
+        </p>
+        
+        <div class="image-grid">
+          <div class="image-card">
+            <img src="assets/villa-itself.jpg" alt="Villa exterior">
+          </div>
+          <div class="image-card">
+            <img src="assets/lake.jpg" alt="Lake Como view">
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Villa Caterina. All rights reserved.</p>
+      <p>14 Via Roma, 22011 Griante Cadenabia, Italy</p>
+      <p><a href="mailto:villacaterina2020@gmail.com">villacaterina2020@gmail.com</a></p>
+    </div>
+  </footer>
+
+  <script src="js/booking.js"></script>
+</body>
+</html>
