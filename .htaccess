@@ -1,0 +1,59 @@
+# Villa Caterina — Apache security configuration
+# Applies HTTP security headers and hardens the static site against
+# the most common web attacks (clickjacking, MIME sniffing, XSS, info leaks).
+
+# ─────────────────────────────────────────────
+# SECURITY HEADERS
+# ─────────────────────────────────────────────
+<IfModule mod_headers.c>
+    # Defense-in-depth against XSS / content injection.
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io https://corsproxy.io https://api.allorigins.win; form-action 'self' https://formspree.io; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+
+    # Clickjacking protection.
+    Header always set X-Frame-Options "DENY"
+
+    # Stop browsers MIME-sniffing responses away from the declared type.
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Limit referrer leakage to other origins.
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Disable powerful features the site never uses.
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()"
+
+    # Force HTTPS for a year (only takes effect when served over HTTPS).
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+    # Cross-origin isolation.
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header always set Cross-Origin-Resource-Policy "same-origin"
+
+    # Remove version/fingerprint headers that help attackers.
+    Header unset X-Powered-By
+    Header unset Server
+</IfModule>
+
+# ─────────────────────────────────────────────
+# FORCE HTTPS
+# ─────────────────────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ─────────────────────────────────────────────
+# BLOCK ACCESS TO SENSITIVE FILES
+# ─────────────────────────────────────────────
+<FilesMatch "(^\.|\.(git|md|log|bak|old|ini|sh|env)$)">
+    Require all denied
+</FilesMatch>
+
+# Block access to the .git directory entirely.
+RedirectMatch 404 /\.git
+
+# Disable directory listing.
+Options -Indexes
+
+# Suppress detailed signature in Apache-generated pages.
+ServerSignature Off
