@@ -167,6 +167,9 @@
     wrap.appendChild(dayNames);
 
     // Cell grid (6 weeks × 7 days covers any month)
+    const days = document.createElement('div');
+    days.className = 'cal-days';
+
     const start = monthGridStart(year, month);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
@@ -208,9 +211,10 @@
         }
       }
 
-      wrap.appendChild(cell);
+      days.appendChild(cell);
     }
 
+    wrap.appendChild(days);
     return wrap;
   }
 
