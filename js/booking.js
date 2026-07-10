@@ -205,7 +205,8 @@
 
   const $checkin = document.getElementById('checkin');
   const $checkout = document.getElementById('checkout');
-  const $guests = document.getElementById('guests');
+  const $adults = document.getElementById('adults');
+  const $children = document.getElementById('children');
   const $priceDisplay = document.getElementById('price-display');
   const $priceAmount = document.getElementById('price-amount');
   const $priceBreakdown = document.getElementById('price-breakdown');
@@ -222,6 +223,29 @@
     $message.textContent = '';
   }
 
+  /** Animate price counter from 0 to target value */
+  function animatePrice(targetValue, duration = 800) {
+    const start = performance.now();
+    const startValue = 0;
+    
+    function update(currentTime) {
+      const elapsed = currentTime - start;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Ease-out cubic: decelerating to zero velocity
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOut);
+      
+      $priceAmount.textContent = `€${currentValue.toLocaleString('en-US')}`;
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+    
+    requestAnimationFrame(update);
+  }
+
   /**
    * Core validation & pricing logic.
    * Called on every input change.
@@ -231,7 +255,9 @@
 
     const checkInStr = $checkin.value;
     const checkOutStr = $checkout.value;
-    const guests = parseInt($guests.value, 10) || 0;
+    const adults = parseInt($adults.value, 10) || 0;
+    const children = parseInt($children.value, 10) || 0;
+    const totalGuests = adults + children;
 
     if (!checkInStr || !checkOutStr) {
       $btn.disabled = true;
@@ -329,8 +355,24 @@
     }
 
     // ── Guest count ──
-    if (guests < 1) {
+    if (totalGuests < 1) {
       showMessage('Please enter at least 1 guest.', 'error');
+      $btn.disabled = true;
+      $btn.textContent = 'Invalid';
+      $priceDisplay.style.display = 'none';
+      return;
+    }
+
+    if (totalGuests > 8) {
+      showMessage('Maximum 8 guests total (adults + children).', 'error');
+      $btn.disabled = true;
+      $btn.textContent = 'Too Many Guests';
+      $priceDisplay.style.display = 'none';
+      return;
+    }
+
+    if (adults < 1) {
+      showMessage('At least 1 adult is required.', 'error');
       $btn.disabled = true;
       $btn.textContent = 'Invalid';
       $priceDisplay.style.display = 'none';
@@ -350,7 +392,7 @@
 
     // ── Show price & enable button ──
     $priceDisplay.style.display = 'block';
-    $priceAmount.textContent = `€${pricing.total.toLocaleString('en-US')}`;
+    animatePrice(pricing.total);
     $priceBreakdown.textContent = `${pricing.nights} nights · ${formatDateHuman(checkIn)} → ${formatDateHuman(checkOut)}`;
 
     $btn.disabled = false;
@@ -359,7 +401,7 @@
     // Store for redirect
     $btn.dataset.checkin = checkInStr;
     $btn.dataset.checkout = checkOutStr;
-    $btn.dataset.guests = String(guests);
+    $btn.dataset.guests = String(totalGuests);
     $btn.dataset.price = String(pricing.total);
     $btn.dataset.nights = String(pricing.nights);
   }
@@ -395,7 +437,8 @@
 
   $checkin.addEventListener('change', validate);
   $checkout.addEventListener('change', validate);
-  $guests.addEventListener('input', validate);
+  $adults.addEventListener('input', validate);
+  $children.addEventListener('input', validate);
   $btn.addEventListener('click', redirectToContact);
 
   // ──────────────────────────────────────────────

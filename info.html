@@ -131,27 +131,83 @@
       <div class="container">
         <h2>Inside the Villa</h2>
 
-        <div class="gallery-grid">
-          <div class="gallery-item"><img src="assets/inside/livingroom-main.jpg" alt="Main living room" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/kitchen.jpg" alt="Kitchen" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/bedroom1.jpg" alt="Master bedroom" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/bedroom2.jpg" alt="Second bedroom" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/bedroom3.jpg" alt="Third bedroom" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/bathroom1.jpg" alt="Main bathroom" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/bathroom2.jpg" alt="Second bathroom" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/fireplace.jpg" alt="Fireplace" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/staircase.jpg" alt="Staircase" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/balcony.jpg" alt="Balcony" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/balcony2.jpg" alt="Balcony view" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/homeoffice.jpg" alt="Home office" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/outside-table.jpg" alt="Outdoor dining" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/outide-table-served.jpg" alt="Table set for dinner" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/view-from-kitchen.jpg" alt="View from kitchen" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/view-from-outside.jpg" alt="View from outside" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/downstairs-hall.jpg" alt="Downstairs hall" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/upstairs-hall.jpg" alt="Upstairs hall" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/mirror.jpg" alt="Hallway mirror" loading="lazy"></div>
-          <div class="gallery-item"><img src="assets/inside/kitchen-tableinside.jpg" alt="Kitchen table" loading="lazy"></div>
+        <div class="gallery-slideshow" id="gallery-slideshow">
+          <div class="gallery-main">
+            <img id="gallery-main-img" src="assets/inside/livingroom-main.jpg" alt="Main living room" class="gallery-main-img">
+            <button class="gallery-nav prev" aria-label="Previous image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button class="gallery-nav next" aria-label="Next image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="gallery-thumbs" id="gallery-thumbs">
+            <div class="gallery-thumb active" data-src="assets/inside/livingroom-main.jpg" data-alt="Main living room">
+              <img src="assets/inside/livingroom-main.jpg" alt="Main living room">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/kitchen.jpg" data-alt="Kitchen">
+              <img src="assets/inside/kitchen.jpg" alt="Kitchen">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/bedroom1.jpg" data-alt="Master bedroom">
+              <img src="assets/inside/bedroom1.jpg" alt="Master bedroom">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/bedroom2.jpg" data-alt="Second bedroom">
+              <img src="assets/inside/bedroom2.jpg" alt="Second bedroom">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/bedroom3.jpg" data-alt="Third bedroom">
+              <img src="assets/inside/bedroom3.jpg" alt="Third bedroom">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/bathroom1.jpg" data-alt="Main bathroom">
+              <img src="assets/inside/bathroom1.jpg" alt="Main bathroom">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/bathroom2.jpg" data-alt="Second bathroom">
+              <img src="assets/inside/bathroom2.jpg" alt="Second bathroom">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/fireplace.jpg" data-alt="Fireplace">
+              <img src="assets/inside/fireplace.jpg" alt="Fireplace">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/staircase.jpg" data-alt="Staircase">
+              <img src="assets/inside/staircase.jpg" alt="Staircase">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/balcony.jpg" data-alt="Balcony">
+              <img src="assets/inside/balcony.jpg" alt="Balcony">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/balcony2.jpg" data-alt="Balcony view">
+              <img src="assets/inside/balcony2.jpg" alt="Balcony view">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/homeoffice.jpg" data-alt="Home office">
+              <img src="assets/inside/homeoffice.jpg" alt="Home office">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/outside-table.jpg" data-alt="Outdoor dining">
+              <img src="assets/inside/outside-table.jpg" alt="Outdoor dining">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/outide-table-served.jpg" data-alt="Table set for dinner">
+              <img src="assets/inside/outide-table-served.jpg" alt="Table set for dinner">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/view-from-kitchen.jpg" data-alt="View from kitchen">
+              <img src="assets/inside/view-from-kitchen.jpg" alt="View from kitchen">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/view-from-outside.jpg" data-alt="View from outside">
+              <img src="assets/inside/view-from-outside.jpg" alt="View from outside">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/downstairs-hall.jpg" data-alt="Downstairs hall">
+              <img src="assets/inside/downstairs-hall.jpg" alt="Downstairs hall">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/upstairs-hall.jpg" data-alt="Upstairs hall">
+              <img src="assets/inside/upstairs-hall.jpg" alt="Upstairs hall">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/mirror.jpg" data-alt="Hallway mirror">
+              <img src="assets/inside/mirror.jpg" alt="Hallway mirror">
+            </div>
+            <div class="gallery-thumb" data-src="assets/inside/kitchen-tableinside.jpg" data-alt="Kitchen table">
+              <img src="assets/inside/kitchen-tableinside.jpg" alt="Kitchen table">
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -196,5 +252,6 @@
   </footer>
 
   <script src="js/nav.js"></script>
+  <script src="js/gallery.js"></script>
 </body>
 </html>
