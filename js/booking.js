@@ -16,15 +16,18 @@
     /** Operational months (1-indexed). All others are closed. */
     OPEN_MONTHS: [4, 5, 6, 7, 8, 9, 10],
     /**
-     * Booking.com iCal feed.
-     * Replace this URL with the real one from the Booking.com extranet.
+     * Booking.com iCal feed URL.
+     * Exports all booked periods so we can block those dates client-side.
      */
-    ICAL_URL: '',
+    ICAL_URL: 'https://ical.booking.com/v1/export?t=f372328a-8c78-4307-9390-8676be7a0b3f',
     /**
-     * CORS proxy to fetch the iCal (needed because Booking.com doesn't set
-     * Access-Control-Allow-Origin).  Use a public proxy or deploy your own.
+     * CORS proxies (tried in order). Booking.com doesn't set
+     * Access-Control-Allow-Origin, so we need a relay.
      */
-    CORS_PROXY: 'https://corsproxy.io/?',
+    CORS_PROXIES: [
+      'https://corsproxy.io/?',
+      'https://api.allorigins.win/raw?url=',
+    ],
   };
 
   // ──────────────────────────────────────────────
@@ -117,25 +120,40 @@
   // ──────────────────────────────────────────────
 
   let blockedDates = new Set(); // Set of "YYYY-MM-DD" strings
+  let availabilityLoaded = false;
 
+  /**
+   * Fetch the Booking.com iCal feed, trying each CORS proxy in turn
+   * until one succeeds. Parses the result and populates blockedDates.
+   */
   async function fetchAvailability() {
     if (!CONFIG.ICAL_URL) {
-      // No iCal URL configured — skip, treat all dates as available
+      console.warn('[VillaCaterina] No iCal URL configured — all dates treated as available.');
+      availabilityLoaded = true;
       return;
     }
 
-    try {
-      const proxyUrl = CONFIG.CORS_PROXY + encodeURIComponent(CONFIG.ICAL_URL);
-      const response = await fetch(proxyUrl);
-      if (!response.ok) {
-        console.warn('iCal fetch failed:', response.status);
+    for (const proxy of CONFIG.CORS_PROXIES) {
+      try {
+        const proxyUrl = proxy + encodeURIComponent(CONFIG.ICAL_URL);
+        console.log(`[VillaCaterina] Fetching iCal via ${proxy.split('/')[2]}...`);
+        const response = await fetch(proxyUrl);
+        if (!response.ok) {
+          console.warn(`[VillaCaterina] Proxy ${proxy.split('/')[2]} returned HTTP ${response.status}`);
+          continue;
+        }
+        const text = await response.text();
+        parseICal(text);
+        availabilityLoaded = true;
         return;
+      } catch (err) {
+        console.warn(`[VillaCaterina] Proxy ${proxy.split('/')[2]} failed:`, err.message);
+        continue;
       }
-      const text = await response.text();
-      parseICal(text);
-    } catch (err) {
-      console.warn('iCal fetch error:', err);
     }
+
+    console.error('[VillaCaterina] All CORS proxies failed. Dates shown as available may not be accurate.');
+    availabilityLoaded = true;
   }
 
   /**
@@ -178,7 +196,7 @@
     }
 
     blockedDates = blocked;
-    console.log(`Availability loaded: ${blocked.size} blocked days`);
+    console.log(`[VillaCaterina] Availability synced: ${blocked.size} blocked days from Booking.com calendar`);
   }
 
   /**
