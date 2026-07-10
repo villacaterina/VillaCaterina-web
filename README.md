@@ -20,13 +20,14 @@ VillaCaterina-web/
 ├── .htaccess               # Apache security hardening (CSP, HTTPS, headers)
 ├── _headers                # Netlify / Cloudflare security headers mirror
 ├── css/
-│   └── styles.css          # Single stylesheet (responsive, dark accents)
+│   └── styles.css          # Single stylesheet with light/dark theme support
 ├── js/
 │   ├── booking.js          # Pricing engine, iCal sync, validation, redirect
 │   ├── calendar.js         # Custom two-month calendar widget
 │   ├── contact.js          # URL param parsing, auto-fill, form submission
 │   ├── reviews.js          # Hardcoded review data + rendering by platform
 │   ├── gallery.js          # Villa interior image slideshow (arrows + keys)
+│   ├── theme.js            # Light/dark theme toggle with localStorage persistence
 │   └── nav.js              # Shared mobile hamburger toggle
 └── assets/
     ├── main.jpg            # Hero image
@@ -170,7 +171,17 @@ The contact page reads these params (`js/contact.js`), validates each one agains
 ### 7. Villa Info Page & Gallery
 `info.html` + `js/gallery.js` provide an interior photo slideshow with previous/next buttons, thumbnail strip, and keyboard arrow-key navigation. Three amenity cards (laundry, ferry access, parking) are displayed above.
 
-### 8. Security Hardening
+### 8. Dark Theme
+The site supports a light/dark theme toggle accessible from both the desktop header and the mobile navigation menu. `js/theme.js` handles:
+- Toggling the `data-theme="dark"` attribute on `<html>`
+- Persisting the user's preference in `localStorage` (key: `vc-theme`)
+- Respecting `prefers-color-scheme: dark` as the default when no stored preference exists
+
+A tiny inline script runs **before** the CSS is loaded (in `<head>`) to set the initial theme attribute — this prevents a flash of unstyled/incorrect-themed content (FOUC).
+
+The dark palette uses warm gold accents (#d4a574) on a deep slate background (#0f172a).
+
+### 9. Security Hardening
 - **Content-Security-Policy** meta tag on every page (no external scripts, no iframes, limited connect-src)
 - **Honeypot anti-spam field** on the contact form (hidden from users, catches bots)
 - **Input validation** on URL parameters (regex-based, rejects malformed/malicious values)
@@ -182,22 +193,26 @@ The contact page reads these params (`js/contact.js`), validates each one agains
 ## Customization
 
 ### Change minimum stay
-Edit `js/booking.js` line 12:
+Edit `js/booking.js` line 15 (`CONFIG.MIN_STAY`):
 ```javascript
 MIN_STAY: 3,  // Change to 5, 7, etc.
 ```
 
 ### Add more images
-Place new images in `assets/` and reference them in `index.html` or `contact.html`.
+Place new images in `assets/` and reference them in the appropriate HTML page. Gallery slideshow images go in `assets/inside/` and are registered as `<div class="gallery-thumb" data-src="..." data-alt="...">` in `info.html`.
 
 ### Modify pricing tiers
-Edit the `getNightRate()` function in `js/booking.js` (lines 27–47).
+Edit `getNightRate()` in `js/booking.js` (lines 38–55). Each `if` branch returns the rate for a specific date range; the function iterates per-night so split-season stays price correctly.
 
 ### Change operational months
-Edit `js/booking.js` line 14:
+Edit `js/booking.js` line 17 (`CONFIG.OPEN_MONTHS`):
 ```javascript
 OPEN_MONTHS: [4, 5, 6, 7, 8, 9, 10],  // Add/remove months (1-indexed)
 ```
+Also mirror the change in `js/calendar.js` line 34 (`OPEN_MONTHS`) so the closed-season rendering stays in sync.
+
+### Change the dark-mode accent color
+The dark theme's warm gold accent is defined once in `css/styles.css` within the `[data-theme="dark"]` rule block (variables `--color-accent` and `--color-accent-light`). Swap the two hex values to retheme the entire dark mode in one edit.
 
 ---
 
@@ -216,7 +231,7 @@ No polyfills required — uses standard ES6+ features (arrow functions, template
 
 - **Zero JavaScript dependencies** — no React, no Vue, no jQuery
 - **No build step** — files are served as-is
-- **Tiny footprint** — total JS: ~15KB (uncompressed)
+- **Tiny footprint** — total JS: ~54KB uncompressed across 7 files
 - **Instant TTI** — no hydration, no framework overhead
 - **Lighthouse score:** 100/100/100/100 (typical)
 
@@ -225,7 +240,7 @@ No polyfills required — uses standard ES6+ features (arrow functions, template
 ## Maintenance
 
 ### Updating the iCal URL
-If Booking.com rotates your export token, just update `js/booking.js` line 18.
+If Booking.com rotates your export token, just update `js/booking.js` line 22 (`CONFIG.ICAL_URL`).
 
 ### Changing the owner email
 Search for `villacaterina2020@gmail.com` in `contact.html` (appears 3 times) and replace.
