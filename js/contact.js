@@ -35,22 +35,50 @@
   }
 
   // ──────────────────────────────────────────────
-  // AUTO-FILL FORM
+  // AUTO-FILL FORM & POPULATE HIDDEN FIELDS
   // ──────────────────────────────────────────────
 
   const $form     = document.getElementById('contact-form');
-  const $email    = document.getElementById('form-email');
   const $name     = document.getElementById('form-name');
+  const $email    = document.getElementById('form-email');
   const $message  = document.getElementById('form-message');
   const $feedback = document.getElementById('form-feedback');
-  const $formWrapper = document.querySelector('.contact-form-wrapper');
+  
+  // Hidden booking data fields
+  const $checkin  = document.getElementById('form-checkin');
+  const $checkout = document.getElementById('form-checkout');
+  const $guestsField = document.getElementById('form-guests');
+  const $nightsField = document.getElementById('form-nights');
+  const $priceField = document.getElementById('form-price');
+  
+  // Booking summary display
+  const $summarySect = document.getElementById('booking-details-summary');
+  const $summaryDates = document.getElementById('summary-dates');
+  const $summaryGuests = document.getElementById('summary-guests');
+  const $summaryNights = document.getElementById('summary-nights');
+  const $summaryPrice = document.getElementById('summary-price');
 
-  // If we have booking params, build the pre-filled message
+  // If we have booking params, populate everything
   if (checkin && checkout && guests && price) {
     const checkinFormatted  = formatHumanDate(checkin);
     const checkoutFormatted = formatHumanDate(checkout);
     const priceFormatted    = Number(price).toLocaleString('en-US');
 
+    // Populate hidden fields (for form submission)
+    $checkin.value = checkin;
+    $checkout.value = checkout;
+    $guestsField.value = guests;
+    $nightsField.value = nights;
+    $priceField.value = price;
+
+    // Show booking summary
+    $summarySect.style.display = 'block';
+    $summaryDates.textContent = `${checkinFormatted} → ${checkoutFormatted}`;
+    $summaryGuests.textContent = `${guests} guest${guests === '1' ? '' : 's'}`;
+    $summaryNights.textContent = `${nights} night${nights === '1' ? '' : 's'}`;
+    $summaryPrice.textContent = priceFormatted;
+
+    // Populate message with booking details
     const messageText = [
       `Hello,`,
       ``,
@@ -69,16 +97,6 @@
     ].join('\n');
 
     $message.value = messageText;
-
-    // Add a visual booking summary above the form
-    const summary = document.createElement('div');
-    summary.className = 'booking-summary';
-    summary.innerHTML = `
-      <strong>Booking Summary</strong><br>
-      ${checkinFormatted} &rarr; ${checkoutFormatted}<br>
-      ${guests} guest${guests === '1' ? '' : 's'} &middot; ${nights} night${nights === '1' ? '' : 's'} &middot; <strong>&euro;${priceFormatted}</strong>
-    `;
-    $formWrapper.insertBefore(summary, $form);
   }
 
   // ──────────────────────────────────────────────
@@ -96,8 +114,14 @@
     const formData = new FormData($form);
 
     // ── Basic validation ──
+    const name = formData.get('name');
     const email = formData.get('email');
     const message = formData.get('message');
+
+    if (!name || name.trim().length < 2) {
+      showFeedback('Please enter your name.', 'error');
+      return;
+    }
 
     if (!email || !email.includes('@')) {
       showFeedback('Please enter a valid email address.', 'error');
@@ -117,7 +141,7 @@
       // Fallback: open mailto link
       const subject = encodeURIComponent('Booking Inquiry - Villa Caterina');
       const body = encodeURIComponent(
-        `From: ${formData.get('name') || 'Anonymous'} (${email})\n\n${message}`
+        `From: ${name} (${email})\n\n${message}`
       );
       window.location.href = `mailto:villacaterina2020@gmail.com?subject=${subject}&body=${body}`;
       showFeedback('Opening your email client...', 'success');
@@ -160,3 +184,4 @@
   });
 
 })();
+

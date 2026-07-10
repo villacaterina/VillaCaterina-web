@@ -107,20 +107,36 @@
           <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
             <h2>Send Inquiry</h2>
             
+            <!-- Booking details (read-only display) -->
+            <div id="booking-details-summary" style="display: none;">
+              <div class="booking-summary">
+                <strong>Your Booking Request</strong><br>
+                <span id="summary-dates"></span><br>
+                <span id="summary-guests"></span> &middot; <span id="summary-nights"></span> &middot; <strong>&euro;<span id="summary-price"></span></strong>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="form-name">Your Name</label>
+              <input type="text" id="form-name" name="name" required>
+            </div>
+
             <div class="form-field">
               <label for="form-email">Your Email Address</label>
               <input type="email" id="form-email" name="email" required>
             </div>
 
             <div class="form-field">
-              <label for="form-name">Your Name</label>
-              <input type="text" id="form-name" name="name">
-            </div>
-
-            <div class="form-field">
               <label for="form-message">Your Message</label>
               <textarea id="form-message" name="message" rows="8"></textarea>
             </div>
+
+            <!-- Hidden fields for booking data -->
+            <input type="hidden" id="form-checkin" name="checkin">
+            <input type="hidden" id="form-checkout" name="checkout">
+            <input type="hidden" id="form-guests" name="guests">
+            <input type="hidden" id="form-nights" name="nights">
+            <input type="hidden" id="form-price" name="price">
 
             <input type="hidden" name="_subject" value="New Booking Inquiry - Villa Caterina">
 
