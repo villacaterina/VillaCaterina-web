@@ -41,3 +41,8 @@
 - Performance overhead from React hydration
 - Complex deployment requirements
 - Dependency management complexity
+
+### Left to do
+- Contact form auto-completion
+- API Security
+- Deploy to GitHub pages
