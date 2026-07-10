@@ -122,6 +122,10 @@
   let blockedDates = new Set(); // Set of "YYYY-MM-DD" strings
   let availabilityLoaded = false;
 
+  // Expose to calendar.js for visual rendering
+  window.blockedDates = blockedDates;
+  window.availabilityLoaded = availabilityLoaded;
+
   /**
    * Fetch the Booking.com iCal feed, trying each CORS proxy in turn
    * until one succeeds. Parses the result and populates blockedDates.
@@ -197,6 +201,13 @@
 
     blockedDates = blocked;
     console.log(`[VillaCaterina] Availability synced: ${blocked.size} blocked days from Booking.com calendar`);
+    
+    // Update global reference and refresh calendar
+    window.blockedDates = blockedDates;
+    window.availabilityLoaded = true;
+    if (window.calendarRefresh) {
+      window.calendarRefresh();
+    }
   }
 
   /**
@@ -221,8 +232,8 @@
   // UI CONTROLLER
   // ──────────────────────────────────────────────
 
-  const $checkin = document.getElementById('checkin');
-  const $checkout = document.getElementById('checkout');
+  const $calendar = document.getElementById('availability-calendar');
+  const $hint = document.getElementById('calendar-hint');
   const $adults = document.getElementById('adults');
   const $children = document.getElementById('children');
   const $priceDisplay = document.getElementById('price-display');
@@ -230,6 +241,10 @@
   const $priceBreakdown = document.getElementById('price-breakdown');
   const $btn = document.getElementById('check-availability-btn');
   const $message = document.getElementById('booking-message');
+
+  // Date selection state (managed by calendar.js)
+  let selectedCheckin = null;
+  let selectedCheckout = null;
 
   function showMessage(text, type) {
     $message.textContent = text;
@@ -266,13 +281,13 @@
 
   /**
    * Core validation & pricing logic.
-   * Called on every input change.
+   * Called when calendar selection changes or guest count changes.
    */
   function validate() {
     clearMessage();
 
-    const checkInStr = $checkin.value;
-    const checkOutStr = $checkout.value;
+    const checkInStr = selectedCheckin;
+    const checkOutStr = selectedCheckout;
     const adults = parseInt($adults.value, 10) || 0;
     const children = parseInt($children.value, 10) || 0;
     const totalGuests = adults + children;
@@ -425,13 +440,36 @@
   }
 
   // ──────────────────────────────────────────────
-  // SET MIN DATE ON DATE INPUTS
+  // SET MIN DATE ON CALENDAR (handled by calendar.js)
   // ──────────────────────────────────────────────
 
   function setMinDates() {
-    const today = formatDateISO(new Date());
-    $checkin.min = today;
-    $checkout.min = today;
+    // Calendar.js handles this internally
+  }
+
+  // ──────────────────────────────────────────────
+  // CALENDAR EVENT LISTENER
+  // ──────────────────────────────────────────────
+
+  if ($calendar) {
+    $calendar.addEventListener('dateselected', function (e) {
+      selectedCheckin = e.detail.checkin;
+      selectedCheckout = e.detail.checkout;
+      
+      // Update hint text
+      if ($hint) {
+        if (!selectedCheckin) {
+          $hint.textContent = 'Click a check-in date.';
+        } else if (!selectedCheckout) {
+          $hint.textContent = `Check-in: ${formatDateHuman(parseDate(selectedCheckin))}. Now click check-out.`;
+        } else {
+          const nights = nightCount(parseDate(selectedCheckin), parseDate(selectedCheckout));
+          $hint.textContent = `${formatDateHuman(parseDate(selectedCheckin))} → ${formatDateHuman(parseDate(selectedCheckout))} (${nights} nights)`;
+        }
+      }
+      
+      validate();
+    });
   }
 
   // ──────────────────────────────────────────────
@@ -453,8 +491,6 @@
   // EVENT LISTENERS
   // ──────────────────────────────────────────────
 
-  $checkin.addEventListener('change', validate);
-  $checkout.addEventListener('change', validate);
   $adults.addEventListener('input', validate);
   $children.addEventListener('input', validate);
   $btn.addEventListener('click', redirectToContact);
