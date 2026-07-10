@@ -44,5 +44,8 @@
 
 ### Left to do
 - Contact form auto-completion
-- API Security
+- Contact form functionality
+- Security hardening
+- Taking down the elder website
 - Deploy to GitHub pages
+- Domain preservance
