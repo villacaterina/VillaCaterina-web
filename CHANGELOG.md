@@ -43,9 +43,8 @@
 - Dependency management complexity
 
 ### Left to do
-- Contact form auto-completion
-- Contact form functionality
-- Security hardening
-- Taking down the elder website
-- Deploy to GitHub pages
-- Domain preservance
+- Fix dark theme. It is inconsistant across pages and after the page reload
+- Add warning if user is trying to request a booking when calendar havent loaded an information from the Booking.com API
+- Make the website secure against the most common types of attacks.
+- Issue: price estimate updates when number of guest changes. That needs to be fixed
+- What else could be added, fixed before the deploy?
