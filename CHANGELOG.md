@@ -43,5 +43,8 @@
 - Dependency management complexity
 
 ### Left to do
-- [ ] Add a favicon (no `<link rel="icon">` declared on any page)
-- [ ] Replace Formspree `YOUR_FORM_ID` placeholder with a real form endpoint before going live
+- Add a favicon (no `<link rel="icon">` declared on any page)
+- Replace Formspree `YOUR_FORM_ID` placeholder with a real form endpoint before going live
+- Attach zone.eu domain for deploy 
+- Verify it could be deployed to github pages
+
