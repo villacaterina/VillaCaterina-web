@@ -1051,6 +1051,7 @@ main {
 
   .info-split {
     grid-template-columns: 1fr;
+    margin-bottom: 2rem;
   }
 
   .amenities-grid {
@@ -1066,12 +1067,115 @@ main {
   }
 
   .gallery-main {
-    height: 400px;
+    height: 320px;
   }
 
   .gallery-thumb {
     width: 100px;
     height: 67px;
+  }
+
+  /* --- Villa page: tighter on mobile --- */
+  .info-intro {
+    padding: 2.5rem 0 2rem;
+  }
+
+  .info-intro h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .info-intro p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .info-split-card {
+    height: 280px;
+  }
+
+  .info-amenities {
+    padding: 2.5rem 0;
+  }
+
+  .info-amenities h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .amenity-image {
+    height: 180px;
+  }
+
+  .amenity-body {
+    padding: 1.25rem;
+  }
+
+  .amenity-body h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-gallery-section {
+    padding: 2.5rem 0;
+  }
+
+  .info-gallery-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  /* --- Reviews page: tighter on mobile --- */
+  .reviews-intro {
+    padding: 2.5rem 0 2rem;
+  }
+
+  .reviews-intro h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .reviews-intro p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .reviews-section {
+    padding: 2rem 0;
+  }
+
+  .platform-header {
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .platform-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .platform-score {
+    font-size: 1rem;
+  }
+
+  .review-card {
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .review-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .review-stars {
+    margin-bottom: 0.75rem;
+  }
+
+  .review-footer {
+    padding-top: 0.75rem;
+    font-size: 0.8rem;
   }
 }
 
