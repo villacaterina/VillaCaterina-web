@@ -43,5 +43,3 @@
 - Dependency management complexity
 
 ### Left to do
-- Attach zone.eu domain for deploy (AI ignore it)
-- Verify it could be deployed to github pages 
