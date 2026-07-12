@@ -20,6 +20,7 @@
   --color-success: #059669;
   --color-error: #dc2626;
   --color-warning: #d97706;
+  --color-text-secondary: #4b5563;
   --font-serif: 'Georgia', 'Times New Roman', serif;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
@@ -1552,6 +1553,13 @@ main {
 [data-theme="dark"] .info-amenities {
   background: #0b1220;
 }
+[data-theme="dark"] .info-split-card {
+  box-shadow: var(--shadow-lg);
+}
+[data-theme="dark"] .info-intro p,
+[data-theme="dark"] .reviews-intro p {
+  color: var(--color-muted);
+}
 [data-theme="dark"] .amenity-card {
   background: var(--color-card);
 }
@@ -1640,4 +1648,30 @@ main {
 /* Mobile nav toggle sits on a dark panel — same styling works */
 .mobile-nav-actions .theme-toggle {
   border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ---------- Dark: gallery scrollbar (Firefox) ---------- */
+[data-theme="dark"] .gallery-thumbs {
+  scrollbar-color: var(--color-accent) #1e293b;
+}
+
+/* ---------- Dark: contact page form field backgrounds ---------- */
+[data-theme="dark"] .form-field input,
+[data-theme="dark"] .form-field textarea,
+[data-theme="dark"] .date-input,
+[data-theme="dark"] .guest-input {
+  background: var(--color-bg);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+/* ---------- Dark: booking message (no type) ---------- */
+[data-theme="dark"] .booking-message {
+  color: var(--color-text);
+}
+
+/* ---------- Dark: cal-cell inner day number background ---------- */
+[data-theme="dark"] .cal-cell.selected .cal-daynum {
+  background: var(--color-accent);
+  color: #0f172a;
 }

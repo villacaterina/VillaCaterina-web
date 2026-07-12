@@ -246,6 +246,9 @@
   let selectedCheckin = null;
   let selectedCheckout = null;
 
+  // Track previous price to avoid re-animating on guest count change
+  let prevPrice = 0;
+
   function showMessage(text, type) {
     $message.textContent = text;
     $message.className = `booking-message visible ${type}`;
@@ -256,10 +259,10 @@
     $message.textContent = '';
   }
 
-  /** Animate price counter from 0 to target value */
-  function animatePrice(targetValue, duration = 800) {
+  /** Animate price counter from previous value to target value */
+  function animatePrice(targetValue, duration = 600) {
     const start = performance.now();
-    const startValue = 0;
+    const startValue = prevPrice;
     
     function update(currentTime) {
       const elapsed = currentTime - start;
@@ -359,34 +362,6 @@
       return;
     }
 
-    // ── Availability check (iCal blocked dates) ──
-    const availCursor = new Date(checkIn);
-    let conflictDate = null;
-    while (availCursor < checkOut) {
-      if (isBlocked(availCursor)) {
-        conflictDate = new Date(availCursor);
-        break;
-      }
-      availCursor.setDate(availCursor.getDate() + 1);
-    }
-    // Also check checkout day (turn-over rule: it's blocked for incoming,
-    // meaning the current booking's checkout day is fine for THIS booking
-    // but the day itself is blocked for incoming guests — which is us checking in)
-    if (isBlocked(checkIn)) {
-      conflictDate = new Date(checkIn);
-    }
-
-    if (conflictDate) {
-      showMessage(
-        `These dates conflict with an existing booking (${formatDateHuman(conflictDate)}). Please choose different dates.`,
-        'error'
-      );
-      $btn.disabled = true;
-      $btn.textContent = 'Unavailable';
-      $priceDisplay.style.display = 'none';
-      return;
-    }
-
     // ── Guest count ──
     if (totalGuests < 1) {
       showMessage('Please enter at least 1 guest.', 'error');
@@ -423,10 +398,51 @@
       return;
     }
 
+    // ── Availability check (iCal blocked dates) ──
+    const availCursor = new Date(checkIn);
+    let conflictDate = null;
+    while (availCursor < checkOut) {
+      if (isBlocked(availCursor)) {
+        conflictDate = new Date(availCursor);
+        break;
+      }
+      availCursor.setDate(availCursor.getDate() + 1);
+    }
+    // Also check checkout day (turn-over rule: it's blocked for incoming,
+    // meaning the current booking's checkout day is fine for THIS booking
+    // but the day itself is blocked for incoming guests — which is us checking in)
+    if (isBlocked(checkIn)) {
+      conflictDate = new Date(checkIn);
+    }
+
+    if (conflictDate) {
+      showMessage(
+        `These dates conflict with an existing booking (${formatDateHuman(conflictDate)}). Please choose different dates.`,
+        'error'
+      );
+      $btn.disabled = true;
+      $btn.textContent = 'Unavailable';
+      $priceDisplay.style.display = 'none';
+      return;
+    }
+
     // ── Show price & enable button ──
+    // Only animate price if the value actually changed (prevents flicker on guest count change)
+    const newPrice = pricing.total;
+    if (newPrice !== prevPrice) {
+      animatePrice(newPrice);
+      prevPrice = newPrice;
+    }
     $priceDisplay.style.display = 'block';
-    animatePrice(pricing.total);
     $priceBreakdown.textContent = `${pricing.nights} nights · ${formatDateHuman(checkIn)} → ${formatDateHuman(checkOut)}`;
+
+    // ── Warn if availability data hasn't loaded yet ──
+    if (!availabilityLoaded) {
+      showMessage(
+        '⚠ Availability data is still loading. Your selected dates may already be booked on Booking.com.',
+        'warning'
+      );
+    }
 
     $btn.disabled = false;
     $btn.textContent = 'Request This Stay';

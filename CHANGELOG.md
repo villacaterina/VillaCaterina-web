@@ -43,8 +43,5 @@
 - Dependency management complexity
 
 ### Left to do
-- Fix dark theme. It is inconsistant across pages and after the page reload
-- Add warning if user is trying to request a booking when calendar havent loaded an information from the Booking.com API
-- Make the website secure against the most common types of attacks.
-- Issue: price estimate updates when number of guest changes. That needs to be fixed
-- What else could be added, fixed before the deploy?
+- [ ] Add a favicon (no `<link rel="icon">` declared on any page)
+- [ ] Replace Formspree `YOUR_FORM_ID` placeholder with a real form endpoint before going live
