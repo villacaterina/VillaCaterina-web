@@ -1868,3 +1868,18 @@ main {
   background: var(--color-accent);
   color: #0f172a;
 }
+
+/* ---------- Mobile stacking overrides (must come after desktop defs) ---------- */
+@media (max-width: 768px) {
+  .info-split {
+    grid-template-columns: 1fr;
+  }
+
+  .amenities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reviews-masonry {
+    column-count: 1;
+  }
+}
