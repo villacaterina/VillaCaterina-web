@@ -19,7 +19,7 @@
      * Booking.com iCal feed URL.
      * Exports all booked periods so we can block those dates client-side.
      */
-    ICAL_URL: 'https://ical.booking.com/v1/export?t=f372328a-8c78-4307-9390-8676be7a0b3f',
+    ICAL_URL: 'https://ical.booking.com/v1/export?t=ed273647-2356-409c-a5c4-109b75e750b6',
     /**
      * CORS proxies (tried in order). Booking.com doesn't set
      * Access-Control-Allow-Origin, so we need a relay.
