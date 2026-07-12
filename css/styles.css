@@ -1610,7 +1610,7 @@ main {
 /* ---------- Dark: footer (deeper black variant) ---------- */
 [data-theme="dark"] .site-footer { background: #020617; }
 
-/* ---------- Theme Toggle Button ---------- */
+/* ---------- Theme Toggle & Language Selector (header actions) ---------- */
 .theme-toggle {
   background: none;
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -1626,16 +1626,48 @@ main {
   transition: background 0.25s ease, transform 0.35s ease, border-color 0.25s ease;
 }
 
+.header-actions .social-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  color: #fff;
+  padding: 0.4rem;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.25s ease, transform 0.35s ease, border-color 0.25s ease;
+}
+
+.header-actions .social-btn:hover,
 .theme-toggle:hover {
   background: rgba(255, 255, 255, 0.12);
   transform: rotate(18deg);
   border-color: rgba(255, 255, 255, 0.45);
 }
 
-.theme-toggle svg {
+.theme-toggle svg,
+.header-actions .social-btn svg {
   width: 18px;
   height: 18px;
   display: block;
+}
+
+/* Group socials + theme + lang together */
+.header-actions .social-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Slight extra spacing between social group and theme+lang */
+.header-actions .lang-theme {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
 }
 
 /* Icon visibility: in light mode show moon (→ click to go dark),

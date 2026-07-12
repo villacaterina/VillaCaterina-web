@@ -119,44 +119,45 @@
   // Fetches Booking.com .ics feed via CORS proxy and extracts blocked dates.
   // ──────────────────────────────────────────────
 
-  let blockedDates = new Set(); // Set of "YYYY-MM-DD" strings
-  let availabilityLoaded = false;
+  let blockedDates = new Set();
+   // availabilityLoaded = fetch finished (success OR failure)
+   // availabilityHasData = fetch succeeded AND we parsed at least some blocked dates
+   window.blockedDates = blockedDates;
+   window.availabilityLoaded = false;
+   window.availabilityHasData = false;
 
-  // Expose to calendar.js for visual rendering
-  window.blockedDates = blockedDates;
-  window.availabilityLoaded = availabilityLoaded;
+   // Grab iCal from Booking.com via CORS proxy, try each until one works.
+   async function fetchAvailability() {
+     if (!CONFIG.ICAL_URL) {
+       console.warn('[VillaCaterina] No iCal URL configured — all dates treated as available.');
+     window.availabilityLoaded = true;
+     finishAvailability();
+     return;
+   }
 
-  /**
-   * Fetch the Booking.com iCal feed, trying each CORS proxy in turn
-   * until one succeeds. Parses the result and populates blockedDates.
-   */
-  async function fetchAvailability() {
-    if (!CONFIG.ICAL_URL) {
-      console.warn('[VillaCaterina] No iCal URL configured — all dates treated as available.');
-      availabilityLoaded = true;
-      return;
-    }
+   for (const proxy of CONFIG.CORS_PROXIES) {
+     try {
+       const proxyUrl = proxy + encodeURIComponent(CONFIG.ICAL_URL);
+       const response = await fetch(proxyUrl);
+       if (!response.ok) continue;
+       parseICal(await response.text());
+       window.availabilityHasData = true;
+       window.availabilityLoaded = true;
+       finishAvailability();
+       return;
+     } catch (_) { continue; }
+   }
 
-    for (const proxy of CONFIG.CORS_PROXIES) {
-      try {
-        const proxyUrl = proxy + encodeURIComponent(CONFIG.ICAL_URL);
-        console.log(`[VillaCaterina] Fetching iCal via ${proxy.split('/')[2]}...`);
-        const response = await fetch(proxyUrl);
-        if (!response.ok) {
-          console.warn(`[VillaCaterina] Proxy ${proxy.split('/')[2]} returned HTTP ${response.status}`);
-          continue;
-        }
-        const text = await response.text();
-        parseICal(text);
-        availabilityLoaded = true;
-        return;
-      } catch (err) {
-        console.warn(`[VillaCaterina] Proxy ${proxy.split('/')[2]} failed:`, err.message);
-        continue;
-      }
-    }
+   // All proxies failed — flag that fetch completed but no booking data available.
+   console.error('[VillaCaterina] All CORS proxies failed.');
+   window.availabilityLoaded = true;
+   finishAvailability();
+  }
 
-    console.error('[VillaCaterina] All CORS proxies failed. Dates shown as available may not be accurate.');
+  function finishAvailability() {
+   if (window.calendarRefresh) window.calendarRefresh();
+   if (window.revalidateBooking) window.revalidateBooking();
+  }
     availabilityLoaded = true;
   }
 
