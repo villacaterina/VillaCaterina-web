@@ -12,6 +12,12 @@
 
   const params = new URLSearchParams(window.location.search);
 
+  // i18n: dictionaries provided by js/i18n.js (must load first).
+  // Falls back to English if i18n.js is missing.
+  const I18N = window.VC_I18N || null;
+  const T = I18N ? I18N.t : function (key) { return key; };
+  const LOCALE = I18N ? I18N.locale : 'en-US';
+
   // ──────────────────────────────────────────────
   // VALIDATE URL PARAMETERS
   // These values come from the URL and are fully attacker-controlled
@@ -51,7 +57,7 @@
     if (!isoStr) return '';
     const parts = isoStr.split('-');
     const d = new Date(+parts[0], +parts[1] - 1, +parts[2]);
-    return d.toLocaleDateString('en-US', {
+    return d.toLocaleDateString(LOCALE, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -87,7 +93,7 @@
   if (checkin && checkout && guests && price) {
     const checkinFormatted  = formatHumanDate(checkin);
     const checkoutFormatted = formatHumanDate(checkout);
-    const priceFormatted    = Number(price).toLocaleString('en-US');
+    const priceFormatted    = Number(price).toLocaleString(LOCALE);
 
     // Populate hidden fields (for form submission)
     $checkin.value = checkin;
@@ -99,27 +105,19 @@
     // Show booking summary
     $summarySect.style.display = 'block';
     $summaryDates.textContent = `${checkinFormatted} → ${checkoutFormatted}`;
-    $summaryGuests.textContent = `${guests} guest${guests === '1' ? '' : 's'}`;
-    $summaryNights.textContent = `${nights} night${nights === '1' ? '' : 's'}`;
+    $summaryGuests.textContent = `${guests} ${I18N ? I18N.plural(guests, 'guest', 'guests') : (guests === '1' ? 'guest' : 'guests')}`;
+    $summaryNights.textContent = `${nights} ${I18N ? I18N.plural(nights, 'night', 'nights') : (nights === '1' ? 'night' : 'nights')}`;
     $summaryPrice.textContent = priceFormatted;
 
     // Populate message with booking details
-    const messageText = [
-      `Hello,`,
-      ``,
-      `I would like to request a booking at Villa Caterina:`,
-      ``,
-      `  Check-in:  ${checkinFormatted}`,
-      `  Check-out: ${checkoutFormatted}`,
-      `  Guests:    ${guests}`,
-      `  Duration:  ${nights} night${nights === '1' ? '' : 's'}`,
-      ``,
-      `  Estimated Total Price: €${priceFormatted}`,
-      ``,
-      `Please confirm availability and let me know the next steps.`,
-      ``,
-      `Thank you,`,
-    ].join('\n');
+    const messageText = T('msgTemplate', {
+      checkin: checkinFormatted,
+      checkout: checkoutFormatted,
+      guests: guests,
+      nights: nights,
+      nightsWord: I18N ? I18N.plural(nights, 'night', 'nights') : (nights === '1' ? 'night' : 'nights'),
+      price: priceFormatted,
+    });
 
     $message.value = messageText;
   }
@@ -144,22 +142,22 @@
     const message = formData.get('message');
 
     if (!name || name.trim().length < 2) {
-      showFeedback('Please enter your name.', 'error');
+      showFeedback(T('errName'), 'error');
       return;
     }
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      showFeedback('Please enter a valid email address.', 'error');
+      showFeedback(T('errEmail'), 'error');
       return;
     }
 
     if (!message || message.trim().length < 10) {
-      showFeedback('Please include a message with your inquiry.', 'error');
+      showFeedback(T('errMessage'), 'error');
       return;
     }
 
     if (message.length > 5000) {
-      showFeedback('Your message is too long. Please shorten it.', 'error');
+      showFeedback(T('errTooLong'), 'error');
       return;
     }
 
@@ -168,7 +166,7 @@
     // silently drop the submission.
     const honeypot = formData.get('company');
     if (honeypot) {
-      showFeedback('Thank you! Your inquiry has been sent.', 'success');
+      showFeedback(T('sent'), 'success');
       $form.reset();
       return;
     }
@@ -179,19 +177,19 @@
     // Check if Formspree is configured
     if (!action || action.includes('YOUR_FORM_ID')) {
       // Fallback: open mailto link
-      const subject = encodeURIComponent('Booking Inquiry - Villa Caterina');
+      const subject = encodeURIComponent(T('mailSubject'));
       const body = encodeURIComponent(
         `From: ${name} (${email})\n\n${message}`
       );
       window.location.href = `mailto:villacaterina2020@gmail.com?subject=${subject}&body=${body}`;
-      showFeedback('Opening your email client...', 'success');
+      showFeedback(T('openingMail'), 'success');
       return;
     }
 
     // Real Formspree submission
     const submitBtn = $form.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
+    submitBtn.textContent = T('sending');
 
     fetch(action, {
       method: 'POST',
@@ -201,25 +199,25 @@
       .then(function (response) {
         if (response.ok) {
           showFeedback(
-            'Thank you! Your inquiry has been sent. We will reply to your email shortly.',
+            T('sentFull'),
             'success'
           );
           $form.reset();
         } else {
           return response.json().then(function (data) {
             showFeedback(
-              data.errors ? data.errors.map(function (e) { return e.message; }).join(', ') : 'Something went wrong. Please try again.',
+              data.errors ? data.errors.map(function (e) { return e.message; }).join(', ') : T('genericError'),
               'error'
             );
           });
         }
       })
       .catch(function () {
-        showFeedback('Network error. Please check your connection and try again.', 'error');
+        showFeedback(T('networkError'), 'error');
       })
       .finally(function () {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Send Inquiry';
+        submitBtn.textContent = T('sendInquiry');
       });
   });
 

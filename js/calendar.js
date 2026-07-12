@@ -28,9 +28,15 @@
   let checkinDate  = null;            // Date objects (local midnight)
   let checkoutDate = null;
 
-  const MONTHS = ['January','February','March','April','May','June',
+  // i18n: dictionaries provided by js/i18n.js (must load first).
+  // Falls back to English if i18n.js is missing.
+  const I18N = window.VC_I18N || null;
+  const T = I18N ? I18N.t : function (key) { return key; };
+
+  const MONTHS = I18N ? I18N.months :
+                 ['January','February','March','April','May','June',
                   'July','August','September','October','November','December'];
-  const DAYS   = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const DAYS   = I18N ? I18N.days : ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const OPEN_MONTHS = [4, 5, 6, 7, 8, 9, 10]; // Apr–Oct
 
   // ──────────────────────────────────────────────
@@ -94,7 +100,7 @@
     const prevBtn = document.createElement('button');
     prevBtn.className = 'cal-nav-btn';
     prevBtn.innerHTML = '&lsaquo;';
-    prevBtn.setAttribute('aria-label', 'Previous month');
+    prevBtn.setAttribute('aria-label', T('prevMonth'));
 
     const title = document.createElement('div');
     title.className = 'cal-title';
@@ -105,7 +111,7 @@
     const nextBtn = document.createElement('button');
     nextBtn.className = 'cal-nav-btn';
     nextBtn.innerHTML = '&rsaquo;';
-    nextBtn.setAttribute('aria-label', 'Next month');
+    nextBtn.setAttribute('aria-label', T('nextMonth'));
 
     header.appendChild(prevBtn);
     header.appendChild(title);
@@ -130,19 +136,25 @@
     const legend = document.createElement('div');
     legend.className = 'cal-legend';
     legend.innerHTML = `
-      <span><i class="dot dot-available"></i> Available</span>
-      <span><i class="dot dot-selected"></i> Selected</span>
-      <span><i class="dot dot-range"></i> In Range</span>
-      <span><i class="dot dot-blocked"></i> Booked</span>
-      <span><i class="dot dot-closed"></i> Closed Season</span>
+      <span><i class="dot dot-available"></i> ${T('legendAvailable')}</span>
+      <span><i class="dot dot-selected"></i> ${T('legendSelected')}</span>
+      <span><i class="dot dot-range"></i> ${T('legendInRange')}</span>
+      <span><i class="dot dot-blocked"></i> ${T('legendBooked')}</span>
+      <span><i class="dot dot-closed"></i> ${T('legendClosed')}</span>
     `;
     $container.appendChild(legend);
 
     if (!window.availabilityLoaded) {
       const note = document.createElement('div');
       note.className = 'cal-loading';
-      note.textContent = 'Loading availability...';
+      note.textContent = T('loading');
       $container.appendChild(note);
+    } else if (!window.availabilityHasData) {
+      const warn = document.createElement('div');
+      warn.className = 'cal-warning';
+      warn.setAttribute('role', 'alert');
+      warn.textContent = T('calLoadFailed');
+      $container.appendChild(warn);
     }
   }
 
@@ -190,10 +202,10 @@
           cell.classList.add('past');
         } else if (isBlocked(cellDate)) {
           cell.classList.add('blocked');
-          cell.title = 'Already booked';
+          cell.title = T('alreadyBooked');
         } else if (isClosedSeason(cellDate)) {
           cell.classList.add('closed');
-          cell.title = 'Closed season (November–March)';
+          cell.title = T('closedTooltip');
         } else {
           cell.classList.add('available');
 

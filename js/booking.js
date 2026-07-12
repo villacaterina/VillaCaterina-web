@@ -16,18 +16,11 @@
     /** Operational months (1-indexed). All others are closed. */
     OPEN_MONTHS: [4, 5, 6, 7, 8, 9, 10],
     /**
-     * Booking.com iCal feed URL.
-     * Exports all booked periods so we can block those dates client-side.
+     * Availability data — a same-origin JSON file generated from the
+     * Booking.com iCal feed by GitHub Actions every 6 hours.
+     * See scripts/sync_availability.py.
      */
-    ICAL_URL: 'https://ical.booking.com/v1/export?t=ed273647-2356-409c-a5c4-109b75e750b6',
-    /**
-     * CORS proxies (tried in order). Booking.com doesn't set
-     * Access-Control-Allow-Origin, so we need a relay.
-     */
-    CORS_PROXIES: [
-      'https://corsproxy.io/?',
-      'https://api.allorigins.win/raw?url=',
-    ],
+    AVAILABILITY_URL: '/availability.json',
   };
 
   // ──────────────────────────────────────────────
@@ -94,8 +87,15 @@
     return `${y}-${m}-${day}`;
   }
 
+  // i18n: dictionaries provided by js/i18n.js (must load first).
+  // Falls back to English if i18n.js is missing.
+  const I18N = window.VC_I18N || null;
+  const T = I18N ? I18N.t : function (key) { return key; };
+  const LOCALE = I18N ? I18N.locale : 'en-US';
+  const nightsWord = n => I18N ? I18N.plural(n, 'night', 'nights') : (String(n) === '1' ? 'night' : 'nights');
+
   function formatDateHuman(d) {
-    return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    return d.toLocaleDateString(LOCALE, { month: 'long', day: 'numeric', year: 'numeric' });
   }
 
   function parseDate(str) {
@@ -115,113 +115,44 @@
   }
 
   // ──────────────────────────────────────────────
-  // iCAL AVAILABILITY PARSING
-  // Fetches Booking.com .ics feed via CORS proxy and extracts blocked dates.
+  // AVAILABILITY DATA
+  // Reads availability.json — a same-origin static file kept in sync with the
+  // Booking.com iCal feed by a GitHub Action (.github/workflows/availability.yml,
+  // runs scripts/sync_availability.py every 6 hours). No CORS proxies needed.
   // ──────────────────────────────────────────────
 
   let blockedDates = new Set();
-   // availabilityLoaded = fetch finished (success OR failure)
-   // availabilityHasData = fetch succeeded AND we parsed at least some blocked dates
-   window.blockedDates = blockedDates;
-   window.availabilityLoaded = false;
-   window.availabilityHasData = false;
+  // availabilityLoaded = fetch finished (success OR failure)
+  // availabilityHasData = fetch succeeded (file parsed, even if 0 bookings)
+  window.blockedDates = blockedDates;
+  window.availabilityLoaded = false;
+  window.availabilityHasData = false;
 
-   // Grab iCal from Booking.com via CORS proxy, try each until one works.
-   async function fetchAvailability() {
-     if (!CONFIG.ICAL_URL) {
-       console.warn('[VillaCaterina] No iCal URL configured — all dates treated as available.');
-     window.availabilityLoaded = true;
-     finishAvailability();
-     return;
-   }
-
-   for (const proxy of CONFIG.CORS_PROXIES) {
-     try {
-       const proxyUrl = proxy + encodeURIComponent(CONFIG.ICAL_URL);
-       const response = await fetch(proxyUrl);
-       if (!response.ok) continue;
-       parseICal(await response.text());
-       window.availabilityHasData = true;
-       window.availabilityLoaded = true;
-       finishAvailability();
-       return;
-     } catch (_) { continue; }
-   }
-
-   // All proxies failed — flag that fetch completed but no booking data available.
-   console.error('[VillaCaterina] All CORS proxies failed.');
-   window.availabilityLoaded = true;
-   finishAvailability();
+  async function fetchAvailability() {
+    try {
+      const resp = await fetch(CONFIG.AVAILABILITY_URL, { cache: 'no-cache' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const data = await resp.json();
+      if (!data || !Array.isArray(data.dates)) throw new Error('Malformed availability.json');
+      applyBlockedDates(new Set(data.dates));
+      console.log(`[VillaCaterina] Availability loaded: ${blockedDates.size} blocked days (generated ${data.generated})`);
+    } catch (err) {
+      console.error('[VillaCaterina] Failed to load availability data:', err);
+    }
+    window.availabilityLoaded = true;
+    finishAvailability();
   }
 
   function finishAvailability() {
-   if (window.calendarRefresh) window.calendarRefresh();
-   if (window.revalidateBooking) window.revalidateBooking();
-  }
-    availabilityLoaded = true;
+    if (window.calendarRefresh) window.calendarRefresh();
+    if (window.revalidateBooking) window.revalidateBooking();
   }
 
-  /**
-   * Minimal iCal parser — extracts VEVENT DTSTART/DTEND pairs
-   * and marks every day in each range as blocked.
-   */
-  function parseICal(raw) {
-    const lines = raw.replace(/\r\n[ \t]/g, '').split(/\r?\n/); // unfold + split
-    const blocked = new Set();
-
-    let inEvent = false;
-    let dtStart = null;
-    let dtEnd = null;
-
-    for (const line of lines) {
-      if (line === 'BEGIN:VEVENT') {
-        inEvent = true;
-        dtStart = null;
-        dtEnd = null;
-      } else if (line === 'END:VEVENT') {
-        inEvent = false;
-        if (dtStart && dtEnd) {
-          // Mark every day in [dtStart, dtEnd) as blocked
-          // Also apply turn-over rule: block checkout day too
-          const cursor = new Date(dtStart);
-          while (cursor < dtEnd) {
-            blocked.add(formatDateISO(cursor));
-            cursor.setDate(cursor.getDate() + 1);
-          }
-          // Turn-over rule: block the checkout day itself
-          blocked.add(formatDateISO(dtEnd));
-        }
-      } else if (inEvent) {
-        if (line.startsWith('DTSTART')) {
-          dtStart = parseICalDate(line);
-        } else if (line.startsWith('DTEND')) {
-          dtEnd = parseICalDate(line);
-        }
-      }
-    }
-
-    blockedDates = blocked;
-    console.log(`[VillaCaterina] Availability synced: ${blocked.size} blocked days from Booking.com calendar`);
-    
-    // Update global reference and refresh calendar
+  /** Central place to swap the blocked-dates set and sync globals. */
+  function applyBlockedDates(set) {
+    blockedDates = set;
     window.blockedDates = blockedDates;
-    window.availabilityLoaded = true;
-    if (window.calendarRefresh) {
-      window.calendarRefresh();
-    }
-  }
-
-  /**
-   * Parse an iCal date from a property line like:
-   *   DTSTART;VALUE=DATE:20260815
-   *   DTSTART:20260815T140000Z
-   */
-  function parseICalDate(line) {
-    const value = line.split(':')[1];
-    if (!value) return null;
-    const str = value.replace(/[^0-9]/g, '').slice(0, 8); // YYYYMMDD
-    if (str.length < 8) return null;
-    return new Date(+str.slice(0, 4), +str.slice(4, 6) - 1, +str.slice(6, 8));
+    window.availabilityHasData = true;
   }
 
   /** Check if a date is blocked (booked via Booking.com) */
@@ -298,7 +229,7 @@
 
     if (!checkInStr || !checkOutStr) {
       $btn.disabled = true;
-      $btn.textContent = 'Select Dates';
+      $btn.textContent = T('btnSelectDates');
       $priceDisplay.style.display = 'none';
       return;
     }
@@ -311,17 +242,17 @@
     // ── Validation checks ──
 
     if (checkIn < today) {
-      showMessage('Check-in date must be in the future.', 'error');
+      showMessage(T('msgFutureDate'), 'error');
       $btn.disabled = true;
-      $btn.textContent = 'Invalid Dates';
+      $btn.textContent = T('btnInvalidDates');
       $priceDisplay.style.display = 'none';
       return;
     }
 
     if (checkOut <= checkIn) {
-      showMessage('Check-out must be after check-in.', 'error');
+      showMessage(T('msgOrder'), 'error');
       $btn.disabled = true;
-      $btn.textContent = 'Invalid Dates';
+      $btn.textContent = T('btnInvalidDates');
       $priceDisplay.style.display = 'none';
       return;
     }
@@ -329,18 +260,18 @@
     const nights = nightCount(checkIn, checkOut);
 
     if (nights < CONFIG.MIN_STAY) {
-      showMessage(`Minimum stay is ${CONFIG.MIN_STAY} nights. Your selection: ${nights} night${nights === 1 ? '' : 's'}.`, 'error');
+      showMessage(T('msgMinStay', { min: CONFIG.MIN_STAY, n: nights, nightsWord: nightsWord(nights) }), 'error');
       $btn.disabled = true;
-      $btn.textContent = 'Too Short';
+      $btn.textContent = T('btnTooShort');
       $priceDisplay.style.display = 'none';
       return;
     }
 
     // ── Season check: every night must fall in operational months ──
     if (!isOperationalDate(checkIn)) {
-      showMessage('The property is only open from April to October.', 'warning');
+      showMessage(T('msgOpenSeason'), 'warning');
       $btn.disabled = true;
-      $btn.textContent = 'Closed Season';
+      $btn.textContent = T('btnClosedSeason');
       $priceDisplay.style.display = 'none';
       return;
     }
@@ -356,34 +287,34 @@
       cursor.setDate(cursor.getDate() + 1);
     }
     if (inClosedSeason) {
-      showMessage('Your stay crosses into the closed season (Nov–Mar). Please adjust dates.', 'warning');
+      showMessage(T('msgCrossSeason'), 'warning');
       $btn.disabled = true;
-      $btn.textContent = 'Closed Season';
+      $btn.textContent = T('btnClosedSeason');
       $priceDisplay.style.display = 'none';
       return;
     }
 
     // ── Guest count ──
     if (totalGuests < 1) {
-      showMessage('Please enter at least 1 guest.', 'error');
+      showMessage(T('msgMinGuest'), 'error');
       $btn.disabled = true;
-      $btn.textContent = 'Invalid';
+      $btn.textContent = T('btnInvalid');
       $priceDisplay.style.display = 'none';
       return;
     }
 
     if (totalGuests > 8) {
-      showMessage('Maximum 8 guests total (adults + children).', 'error');
+      showMessage(T('msgMaxGuests'), 'error');
       $btn.disabled = true;
-      $btn.textContent = 'Too Many Guests';
+      $btn.textContent = T('btnTooManyGuests');
       $priceDisplay.style.display = 'none';
       return;
     }
 
     if (adults < 1) {
-      showMessage('At least 1 adult is required.', 'error');
+      showMessage(T('msgAdultRequired'), 'error');
       $btn.disabled = true;
-      $btn.textContent = 'Invalid';
+      $btn.textContent = T('btnInvalid');
       $priceDisplay.style.display = 'none';
       return;
     }
@@ -392,9 +323,9 @@
     const pricing = calculatePrice(checkIn, checkOut);
 
     if (pricing.closedSeason) {
-      showMessage('Your stay includes nights in the closed season.', 'warning');
+      showMessage(T('msgClosedNights'), 'warning');
       $btn.disabled = true;
-      $btn.textContent = 'Closed Season';
+      $btn.textContent = T('btnClosedSeason');
       $priceDisplay.style.display = 'none';
       return;
     }
@@ -418,11 +349,11 @@
 
     if (conflictDate) {
       showMessage(
-        `These dates conflict with an existing booking (${formatDateHuman(conflictDate)}). Please choose different dates.`,
+        T('msgConflict', { date: formatDateHuman(conflictDate) }),
         'error'
       );
       $btn.disabled = true;
-      $btn.textContent = 'Unavailable';
+      $btn.textContent = T('btnUnavailable');
       $priceDisplay.style.display = 'none';
       return;
     }
@@ -435,18 +366,23 @@
       prevPrice = newPrice;
     }
     $priceDisplay.style.display = 'block';
-    $priceBreakdown.textContent = `${pricing.nights} nights · ${formatDateHuman(checkIn)} → ${formatDateHuman(checkOut)}`;
+    $priceBreakdown.textContent = T('breakdown', { nights: pricing.nights, from: formatDateHuman(checkIn), to: formatDateHuman(checkOut) });
 
-    // ── Warn if availability data hasn't loaded yet ──
-    if (!availabilityLoaded) {
+    // ── Warn if availability data is missing ──
+    if (!window.availabilityLoaded) {
       showMessage(
-        '⚠ Availability data is still loading. Your selected dates may already be booked on Booking.com.',
+        T('msgStillLoading'),
+        'warning'
+      );
+    } else if (!window.availabilityHasData) {
+      showMessage(
+        T('msgLoadFailed'),
         'warning'
       );
     }
 
     $btn.disabled = false;
-    $btn.textContent = 'Request This Stay';
+    $btn.textContent = T('btnRequestStay');
 
     // Store for redirect
     $btn.dataset.checkin = checkInStr;
@@ -476,12 +412,12 @@
       // Update hint text
       if ($hint) {
         if (!selectedCheckin) {
-          $hint.textContent = 'Click a check-in date.';
+          $hint.textContent = T('hintCheckin');
         } else if (!selectedCheckout) {
-          $hint.textContent = `Check-in: ${formatDateHuman(parseDate(selectedCheckin))}. Now click check-out.`;
+          $hint.textContent = T('hintCheckout', { date: formatDateHuman(parseDate(selectedCheckin)) });
         } else {
           const nights = nightCount(parseDate(selectedCheckin), parseDate(selectedCheckout));
-          $hint.textContent = `${formatDateHuman(parseDate(selectedCheckin))} → ${formatDateHuman(parseDate(selectedCheckout))} (${nights} nights)`;
+          $hint.textContent = T('hintRange', { from: formatDateHuman(parseDate(selectedCheckin)), to: formatDateHuman(parseDate(selectedCheckout)), nights: nights });
         }
       }
       
@@ -511,6 +447,9 @@
   $adults.addEventListener('input', validate);
   $children.addEventListener('input', validate);
   $btn.addEventListener('click', redirectToContact);
+
+  // Allow booking.js availability updates to re-run validation
+  window.revalidateBooking = validate;
 
   // ──────────────────────────────────────────────
   // INIT

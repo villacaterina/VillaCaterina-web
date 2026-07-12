@@ -1,0 +1,35 @@
+name: Sync availability
+
+on:
+  schedule:
+    # Every 6 hours
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch Booking.com iCal and update availability.json
+        run: python scripts/sync_availability.py
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- availability.json; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "availability-bot"
+          git config user.email "actions@github.com"
+          git add availability.json
+          git commit -m "chore: sync availability from Booking.com"
+          git push
