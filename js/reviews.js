@@ -30,6 +30,10 @@
         it: {
           title: 'Abbiamo apprezzato moltissimo il nostro soggiorno in famiglia in questa elegante Villa.',
           text: 'Villa Caterina è una casa elegante e bellissima. La Villa era arredata con grande cura e dotata di tutto il necessario, soprattutto la cucina. Le piccole attenzioni in più, come caffè, tè, biscotti, biancheria e prodotti da bagno, sono state molto gradite. Il sentiero sul davanti che scende al minimarket, alle fermate degli autobus, al bar e alla pizzeria era davvero comodo.'
+        },
+        fr: {
+          title: 'Nous avons pleinement apprécié notre séjour en famille dans cette élégante Villa.',
+          text: 'Villa Caterina est une maison élégante et magnifique. La Villa était parfaitement équipée avec tout ce dont on a besoin, en particulier la cuisine. Les petites attentions telles que le café, le thé, les biscuits ainsi que le linge et les articles de toilette ont été très appréciées. Le sentier devant la maison qui descend vers le mini marché, les bus, le café et la pizzeria était très pratique.'
         }
       }
     },
@@ -44,6 +48,10 @@
         it: {
           title: 'Un felice ritorno in una magnifica villa sul bellissimo Lago di Como a Cadenabbia.',
           text: 'Si tratta di una struttura indipendente, non di un hotel, quindi niente colazione, ma il proprietario ci ha offerto uno spuntino e una grande bottiglia di champagne, un gesto davvero gentile. C’è un bel mercato a pochi minuti a piedi, così come bar e ristoranti facilmente raggiungibili dalla Villa, e siamo anche molto vicini al traghetto per Bellagio e per tutte le altre località del lago. Questa proprietà è vicina alla famosa villa dove l’ex cancelliere tedesco Konrad Adenauer trascorreva le estati molte volte durante il suo mandato e anche dopo, e vi dà un’idea di quanto siano pregiati il quartiere e questa Villa: di classe mondiale.'
+        },
+        fr: {
+          title: 'Un heureux retour dans une magnifique villa sur le beau lac de Côme à Cadenabbia.',
+          text: 'Il s\'agit d\'une propriété indépendante — pas d\'un hôtel, donc pas de petit-déjeuner, mais le propriétaire nous a offert une collation et une grande bouteille de champagne, ce qui était une très belle attention. Il y a un joli marché à quelques minutes à pied, ainsi que des bars et restaurants facilement accessibles depuis la Villa, et nous sommes aussi très proches du ferry pour Bellagio et tous les autres ports du lac. Cette propriété est voisine de la célèbre villa où l\'ancien chancelier allemand Konrad Adenauer a passé ses étés à de nombreuses reprises pendant son mandat et après, et cela vous donne une idée de la qualité du quartier et de cette Villa — de classe mondiale.'
         }
       }
     },
@@ -58,6 +66,10 @@
         it: {
           title: 'Abbiamo vissuto un’esperienza bellissima esplorando tutti i luoghi di interesse di Como, soggiornando nella graziosa Villa Caterina Griante',
           text: 'La posizione è fantastica! Solo 80 m dal lago. Il supermercato locale è a 50 m. Il design della villa è molto bello, un’intelligente integrazione di stili diversi. Molto pulita e accogliente. Padrona di casa adorabile!'
+        },
+        fr: {
+          title: 'Nous avons vécu une très belle expérience en explorant tous les sites touristiques de Côme, en séjournant à la charmante Villa Caterina Griante',
+          text: 'L\'emplacement est excellent ! À seulement 80 m du lac. Le supermarché local est à 50 m. Très beau design de la villa — une intégration intelligente de différents styles. Très propre et chaleureuse. Une hôtesse adorable !'
         }
       }
     },
@@ -72,6 +84,10 @@
         it: {
           title: '',
           text: 'La Villa è molto buona, molto pulita ma anche con tutti i dettagli curati. Ad esempio abbondanza di asciugamani, prodotti da bagno, cucina molto ben attrezzata, ecc. ecc. ecc. La posizione è eccellente per chiunque visiti il Lago di Como. Simona è un’ottima host ed è rimasta in contatto tramite WhatsApp prima e dopo la visita.'
+        },
+        fr: {
+          title: '',
+          text: 'La Villa est très bien — très propre et tous les détails sont soignés. Par exemple l\'abondance de serviettes, d\'articles de toilette, la cuisine très bien équipée, etc. etc. etc. L\'emplacement est excellent pour quiconque visite le lac de Côme. Simona est une excellente hôtesse et est restée en contact via WhatsApp avant et après le séjour.'
         }
       }
     },
@@ -90,6 +106,10 @@
         it: {
           title: 'Tutto era al posto giusto ed è stato meraviglioso',
           text: 'Ottima posizione, molto pulita e una bella villa.'
+        },
+        fr: {
+          title: 'Tout était parfait et absolument magnifique',
+          text: 'Très bon emplacement, très propre et une belle villa.'
         }
       }
     },
@@ -122,6 +142,10 @@
         it: {
           title: 'Grande Villa con ottima posizione',
           text: 'Bella Villa con ottima posizione. La villa è grande e adatta a una famiglia numerosa, con tre camere da letto e tre bagni. C’è un giardino con un sentiero che scende al lago e alla strada principale, ed è molto vicina alla stazione dei traghetti, a cinque minuti a piedi. Un ringraziamento speciale a Simona per il suo grande supporto in ogni momento, e grazie a Lina per averci accolto e spiegato le dotazioni della Villa.'
+        },
+        fr: {
+          title: 'Grande Villa avec un excellent emplacement',
+          text: 'Belle Villa très bien située. La villa est grande et adaptée à une grande famille avec trois chambres et trois salles de bains. Il y a un jardin avec un sentier qui descend vers le lac et la route principale, et elle est très proche de la gare des ferries — cinq minutes à pied. Un grand merci à Simona pour son soutien constant, et merci à Lina de nous avoir accueillis et expliqué les équipements de la Villa.'
         }
       }
     },
@@ -140,6 +164,10 @@
         it: {
           title: '',
           text: 'Le persone che consegnano e ritirano le chiavi non parlano una parola di inglese. La comunicazione è difficile. Inoltre, la persona che ritirava le chiavi era molto scortese e ci ha costretto a prendere la spazzatura dal bidone esterno accanto alla villa e a portarla nei contenitori vicini.'
+        },
+        fr: {
+          title: '',
+          text: 'Les personnes qui remettent et récupèrent les clés ne parlent pas un mot d\'anglais. La communication est difficile. De plus, la personne qui récupérait les clés était très désagréable et nous a forcés à emporter les déchets de la poubelle extérieure située à côté de la villa et à les amener jusqu\'aux conteneurs voisins.'
         }
       }
     },
@@ -158,6 +186,10 @@
         it: {
           title: 'Un posto meraviglioso',
           text: 'Tutto era meraviglioso. Una casa splendida, viste e comfort.'
+        },
+        fr: {
+          title: 'Un endroit merveilleux',
+          text: 'Tout était merveilleux. Une maison splendide, des vues et des équipements.'
         }
       }
     },
@@ -176,6 +208,10 @@
         it: {
           title: 'Soggiorno incantevole',
           text: 'La posizione è assolutamente fantastica. Un piccolo sentiero e si è subito al lago. Una vista davvero fantastica dalla casa, sia dentro che fuori.'
+        },
+        fr: {
+          title: 'Un séjour charmant',
+          text: 'L\'emplacement est absolument fantastique. Un petit sentier et on est vite au bord du lac. Une vue vraiment fantastique depuis la maison, à l\'intérieur comme à l\'extérieur.'
         }
       }
     },
@@ -190,6 +226,10 @@
         it: {
           title: 'Semplicemente fantastica, la consiglio vivamente!',
           text: 'A partire dalla posizione, la villa si trova vicino alla stazione dei traghetti di Cadenabbia (5–7 minuti a piedi), che ha un collegamento diretto con Bellagio e Varenna. Questo significava che potevamo spostarci senza usare l’auto. Detto ciò, la villa ha un parcheggio per 2 auto. La villa in sé è fantastica: stile classico, appena ristrutturata, pulita e ben attrezzata, accogliente e confortevole. Due delle 3 camere da letto hanno il proprio bagno. C’è anche un ufficio con un divano allungabile, se vi serve un altro letto. La cucina è attrezzata con tutto il necessario se decidete di restare a casa e cucinare.'
+        },
+        fr: {
+          title: 'Simplement incroyable, je la recommande vivement !',
+          text: 'En commençant par l\'emplacement, la villa est située près de la gare des ferries de Cadenabbia (5–7 min à pied), qui offre une liaison directe vers Bellagio et Varenna. Nous pouvions donc nous déplacer sans utiliser la voiture. Cela dit, la villa dispose d\'un parking pour 2 voitures. La villa elle-même est incroyable — style classique, récemment rénovée, propre et bien équipée, chaleureuse et confortable. Deux des 3 chambres ont leur propre salle de bains. Il y a aussi un bureau avec un canapé extensible, si vous avez besoin d\'un lit supplémentaire. La cuisine est équipée de tout ce dont vous avez besoin si vous décidez de rester et de cuisiner.'
         }
       }
     },
@@ -208,6 +248,10 @@
         it: {
           title: '',
           text: 'Tutto era perfetto. Niente di cui lamentarsi.'
+        },
+        fr: {
+          title: '',
+          text: 'Tout était parfait. Rien à redire.'
         }
       }
     },
@@ -222,6 +266,10 @@
         it: {
           title: 'Un posto incantevole dove soggiornare sul Lago di Como',
           text: 'Abbiamo prenotato la Villa per soggiornare con famiglia e amici per la celebrazione del nostro grande giorno sul Lago di Como. La signora Lina ci ha accolto al nostro arrivo per mostrarci la villa e tutte le sue dotazioni. È stata molto disponibile, così come Simona, che era il contatto principale ed è stata molto utile per qualsiasi domanda avessimo. Un grande grazie per il delizioso bouquet di fiori che Simona e Lina hanno organizzato per il giorno del nostro matrimonio. Consiglierei sicuramente questo posto se cercate un luogo incantevole dove soggiornare sul Lago di Como.'
+        },
+        fr: {
+          title: 'Un endroit charmant où séjourner sur le lac de Côme',
+          text: 'Nous avons réservé la Villa pour séjourner en famille et entre amis pour la célébration de notre grand jour sur le lac de Côme. Madame Lina nous a accueillis à notre arrivée pour nous montrer la villa et toutes ses installations. Elle a été très serviable, tout comme Simona, qui était notre contact principal et s\'est montrée très utile pour toutes nos questions. Un grand merci pour le ravissant bouquet de fleurs que Simona et Lina ont organisé pour notre jour de mariage. Je recommande sans hésiter cet endroit si vous cherchez un lieu charmant où séjourner sur le lac de Côme.'
         }
       }
     },
@@ -240,6 +288,10 @@
         it: {
           title: 'Siamo stati in vacanza nella villa con la famiglia, tre generazioni, tutti entusiasti!',
           text: 'Vista magnifica, villa confortevole: i proprietari hanno pensato a tutto, fino ai minimi dettagli! Un grande grazie a loro!'
+        },
+        fr: {
+          title: 'Nous avons passé des vacances en famille à la villa, trois générations, tous ravis !',
+          text: 'Une vue magnifique, une villa confortable — les propriétaires ont pensé à tout, jusqu\'au moindre détail ! Un grand merci à eux !'
         }
       }
     },
@@ -254,6 +306,10 @@
         it: {
           title: 'Una villa d’altri tempi con comfort moderni vi aspetta per sistemarvi, rilassarvi e trovare la pace in un angolo di paradiso.',
           text: 'Una casa così graziosa, con viste incredibili e un completo senso di comfort e tranquillità. Ottima cucina, aria condizionata eccellente, lavanderia, docce fantastiche e una splendida terrazza. La Villa è in un’ottima posizione. Non troppo affollata per rilassarsi e godersi la vacanza, ma a pochi passi da ristoranti, dal traghetto, da Villa Carlotta, e persino Tremezzo non era troppo lontana per una passeggiata mattutina. Prendete il sentiero segreto fino al cancello accanto alla piccola cappella per risparmiare tempo nel raggiungere il lungolago. C’erano tanti ottimi ristoranti locali, soprattutto il Restaurante Belli Ille. Prendete il traghetto di 10 minuti per Bellagio, che parte circa ogni mezz’ora, per pochi dollari a persona.'
+        },
+        fr: {
+          title: 'Une villa d\'époque avec des équipements modernes vous attend pour vous installer, vous détendre et trouver la paix dans un coin de paradis.',
+          text: 'Une maison si élégante avec des vues incroyables et un sentiment complet de confort et de tranquillité. Excellente cuisine, la climatisation était parfaite, la buanderie, de belles douches et une magnifique terrasse. La Villa est très bien située. Pas trop fréquentée pour se détendre et être en vacances, mais à distance de marche des restaurants, du ferry, de la Villa Carlotta, et même Tremezzo n\'était pas trop loin pour une promenade matinale. Prenez le sentier secret jusqu\'au portail près de la petite chapelle pour gagner du temps pour descendre au bord du lac. Il y avait tant d\'excellents restaurants locaux, en particulier le Restaurante Belli Ille. Prenez le ferry de 10 minutes pour Bellagio, qui part environ toutes les demi-heures, pour quelques dollars par personne.'
         }
       }
     },
@@ -289,6 +345,14 @@
         it: {
           title: '',
           text: 'Il nostro soggiorno in questa splendida villa sul Lago di Como è stato semplicemente perfetto! L’eleganza della proprietà era evidente in ogni dettaglio, dagli interni splendidamente progettati al giardino meticolosamente curato. La vista mozzafiato del lago dalla terrazza era assolutamente indimenticabile: svegliarsi davanti a un paesaggio così sereno e pittoresco era un sogno che diventava realtà.\n\nLa villa era completamente attrezzata con tutto ciò di cui avevamo bisogno, e siamo rimasti particolarmente colpiti dalla premurosa presenza di tutto l’essenziale per nostra figlia. Ha reso davvero molto più facile e senza stress viaggiare con una bambina.\n\nQuesta vacanza è stata a dir poco fantastica e consiglieremmo vivamente questa straordinaria villa a chiunque cerchi una fuga lussuosa e rilassante. Non vediamo l’ora di tornare!'
+        },
+        fr: {
+          title: '',
+          text: 'Notre séjour dans cette superbe villa sur le lac de Côme était tout simplement parfait ! L\'élégance de la propriété était évidente dans chaque détail, des intérieurs magnifiquement conçus au jardin méticuleusement entretenu. La vue à couper le souffle sur le lac depuis la terrasse était absolument inoubliable — se réveiller devant un paysage aussi serein et pittoresque était un rêve devenu réalité.
+
+La villa était entièrement équipée avec tout ce dont nous avions besoin, et nous avons été particulièrement impressionnés par la présence attentionnée de tous les essentiels pour notre fille. Cela a vraiment rendu le voyage avec un enfant en bas âge beaucoup plus facile et sans stress.
+
+Ces vacances étaient tout simplement fantastiques, et nous recommandons vivement cette villa extraordinaire à quiconque cherche une escapade luxueuse et relaxante. Nous avons hâte de revenir !'
         }
       }
     },
@@ -302,6 +366,12 @@
         it: {
           title: '',
           text: 'Questa villa è una casa gloriosamente tranquilla sulle rive del Lago di Como, situata in una posizione ideale per raggiungere Tremezzo a piedi o prendere il traghetto per una traversata di 10 minuti verso Bellagio. La casa è una classica villa italiana sul lago, con comfort moderni e un ospite gentile. Siamo stati molto contenti di aver scelto questo posto per il nostro soggiorno in questa zona.\n\nCadenabbia è meno caotica della maggior parte degli altri paesi del lago e perfetta per passeggiate lungo la riva del lago, o per una visita ai giardini di Villa Carlotta. Abbiamo trovato molti posti dove sederci e mangiare godendoci le belle viste del lago. La casa aveva ampio spazio per il nostro gruppo di 7 persone. Altamente raccomandata.'
+        },
+        fr: {
+          title: '',
+          text: 'Cette villa est une maison merveilleusement paisible sur les rives du lac de Côme, idéalement située pour se rendre à pied à Tremezzo ou prendre le ferry pour une traversée de 10 minutes vers Bellagio. La maison est une villa italienne classique au bord du lac, avec des équipements modernes et un hôte charmant. Nous étions ravis d\'avoir choisi cet endroit pour notre séjour dans la région.
+
+Cadenabbia est moins agitée que la plupart des autres villages du lac et parfaite pour des promenades au bord du lac, ou une visite des jardins de la Villa Carlotta. Nous avons trouvé de nombreux endroits où s\'asseoir et manger tout en profitant des belles vues sur le lac. La maison offrait suffisamment d\'espace pour notre groupe de 7 personnes. Vivement recommandé.'
         }
       }
     },
@@ -319,6 +389,11 @@
         it: {
           title: '',
           text: 'La nostra sensazione di vacanza è iniziata con i fiori colorati e l’aria del mattino piacevolmente profumata. Dal balcone abbiamo goduto di una vista fantastica sul Lago di Como. Le stanze della villa, restaurate con amore, hanno superato le nostre alte aspettative.\nL’accesso diretto attraverso il giardino alla passeggiata ha completato la nostra impressione positiva. Torneremo sicuramente!'
+        },
+        fr: {
+          title: '',
+          text: 'Notre sentiment de vacances a commencé avec les fleurs colorées et l\'air du matin agréablement parfumé. Depuis le balcon, nous avions une vue fantastique sur le lac de Côme. Les pièces de la villa, restaurées avec amour, ont dépassé nos grandes attentes.
+L\'accès direct par le jardin à la promenade a complété notre impression positive. Nous reviendrons à coup sûr !'
         }
       }
     },
@@ -336,6 +411,10 @@
         it: {
           title: '',
           text: 'Villa bellissima con una vista fantastica sul Lago di Como! Meravigliosamente arredata e padroni di casa molto gentili!'
+        },
+        fr: {
+          title: '',
+          text: 'Magnifique villa avec une vue fantastique sur le lac de Côme ! Merveilleusement meublée et des hôtes très chaleureux !'
         }
       }
     }
@@ -353,6 +432,10 @@
         it: {
           title: '',
           text: 'Villa Caterina è molto bella, con una vista mozzafiato sulle montagne e sul lago! La consiglio vivamente e, se tornerò sul Lago di Como, sarà la mia prima scelta! Perfetta per le famiglie, tutti si troveranno molto a proprio agio, c’è molto spazio. Il posto ha superato le mie aspettative! Grazie!'
+        },
+        fr: {
+          title: '',
+          text: 'Villa Caterina est très belle avec une vue imprenable sur les montagnes et le lac ! Je la recommande vivement et si je reviens sur le lac de Côme, ce sera mon premier choix ! Parfaite pour les familles, tout le monde sera très à l\'aise, beaucoup d\'espace. L\'endroit a dépassé mes attentes ! Merci !'
         }
       }
     },
@@ -383,6 +466,10 @@
         it: {
           title: '',
           text: 'Bella casa, abbiamo apprezzato il nostro soggiorno. I padroni di casa hanno soddisfatto tutte le nostre richieste.'
+        },
+        fr: {
+          title: '',
+          text: 'Belle maison, nous avons apprécié notre séjour. Les hôtes ont répondu à toutes nos demandes.'
         }
       }
     }
