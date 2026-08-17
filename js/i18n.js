@@ -72,6 +72,11 @@
       networkError: 'Network error. Please check your connection and try again.',
       mailSubject: 'Booking Inquiry - Villa Caterina',
       msgTemplate: 'Hello,\n\nI would like to request a booking at Villa Caterina:\n\n  Check-in:  {checkin}\n  Check-out: {checkout}\n  Guests:    {guests}\n  Duration:  {nights} {nightsWord}\n\n  Estimated Total Price: €{price}\n\nPlease confirm availability and let me know the next steps.\n\nThank you,',
+
+      // Reviews page
+      showOriginal: 'Show original ({lang})',
+      showTranslation: 'Show translation ({lang})',
+      langNames: { en: 'English', de: 'German', fr: 'French', pl: 'Polish', da: 'Danish', uk: 'Ukrainian' },
     },
 
     it: {
@@ -132,6 +137,11 @@
       networkError: 'Errore di rete. Controlla la connessione e riprova.',
       mailSubject: 'Richiesta di prenotazione - Villa Caterina',
       msgTemplate: 'Buongiorno,\n\nvorrei richiedere una prenotazione presso Villa Caterina:\n\n  Check-in:  {checkin}\n  Check-out: {checkout}\n  Ospiti:    {guests}\n  Durata:    {nights} {nightsWord}\n\n  Prezzo totale stimato: €{price}\n\nVi prego di confermare la disponibilità e indicarmi i prossimi passi.\n\nGrazie,',
+
+      // Reviews page
+      showOriginal: 'Mostra originale ({lang})',
+      showTranslation: 'Mostra traduzione ({lang})',
+      langNames: { en: 'Inglese', de: 'Tedesco', fr: 'Francese', pl: 'Polacco', da: 'Danese', uk: 'Ucraino' },
     },
 
     fr: {
@@ -192,6 +202,11 @@
       networkError: 'Erreur réseau. Vérifiez votre connexion et réessayez.',
       mailSubject: 'Demande de réservation - Villa Caterina',
       msgTemplate: 'Bonjour,\n\nje souhaite demander une réservation à la Villa Caterina :\n\n  Arrivée :  {checkin}\n  Départ :   {checkout}\n  Voyageurs : {guests}\n  Durée :    {nights} {nightsWord}\n\n  Prix total estimé : {price} €\n\nMerci de confirmer la disponibilité et de m\u2019indiquer les prochaines étapes.\n\nCordialement,',
+
+      // Reviews page
+      showOriginal: 'Afficher l\u2019original ({lang})',
+      showTranslation: 'Afficher la traduction ({lang})',
+      langNames: { en: 'Anglais', de: 'Allemand', fr: 'Français', pl: 'Polonais', da: 'Danois', uk: 'Ukrainien' },
     },
 
     de: {
@@ -252,6 +267,11 @@
       networkError: 'Netzwerkfehler. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
       mailSubject: 'Buchungsanfrage - Villa Caterina',
       msgTemplate: 'Guten Tag,\n\nich möchte eine Buchung in der Villa Caterina anfragen:\n\n  Anreise:  {checkin}\n  Abreise:  {checkout}\n  Gäste:    {guests}\n  Dauer:    {nights} {nightsWord}\n\n  Geschätzter Gesamtpreis: {price} €\n\nBitte bestätigen Sie die Verfügbarkeit und teilen Sie mir die nächsten Schritte mit.\n\nVielen Dank,',
+
+      // Reviews page
+      showOriginal: 'Original anzeigen ({lang})',
+      showTranslation: 'Übersetzung anzeigen ({lang})',
+      langNames: { en: 'Englisch', de: 'Deutsch', fr: 'Französisch', pl: 'Polnisch', da: 'Dänisch', uk: 'Ukrainisch' },
     },
   };
 
@@ -274,6 +294,7 @@
     locale: dict.locale,
     months: dict.months,
     days: dict.days,
+    langNames: dict.langNames || DICTS.en.langNames,
     t: t,
     /** Pluralized word for nights/guests */
     plural: function (n, singularKey, pluralKey) {
