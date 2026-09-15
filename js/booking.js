@@ -191,28 +191,53 @@
     $message.textContent = '';
   }
 
+  function setPriceText(value) {
+    $priceAmount.textContent = `€${value.toLocaleString(LOCALE)}`;
+  }
+
   /** Animate price counter from previous value to target value */
   function animatePrice(targetValue, duration = 600) {
+    // requestAnimationFrame never fires while the tab is hidden, which would
+    // leave the price stuck at its starting value next to an enabled "Request
+    // this stay" button. Skip the animation and show the real number instead —
+    // same for anyone who asked for reduced motion.
+    const reduceMotion = window.matchMedia
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (document.hidden || reduceMotion) {
+      setPriceText(targetValue);
+      return;
+    }
+
     const start = performance.now();
     const startValue = prevPrice;
-    
+
     function update(currentTime) {
       const elapsed = currentTime - start;
       const progress = Math.min(elapsed / duration, 1);
-      
+
+      if (progress >= 1) {
+        setPriceText(targetValue);
+        return;
+      }
+
       // Ease-out cubic: decelerating to zero velocity
       const easeOut = 1 - Math.pow(1 - progress, 3);
-      const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOut);
-      
-      $priceAmount.textContent = `€${currentValue.toLocaleString(LOCALE)}`;
-      
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      }
+      setPriceText(Math.floor(startValue + (targetValue - startValue) * easeOut));
+      requestAnimationFrame(update);
     }
-    
+
     requestAnimationFrame(update);
   }
+
+  // If the tab is backgrounded mid-animation the counter stops wherever it got
+  // to; snap it to the real total when the user comes back. prevPrice always
+  // holds the current target.
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && $priceDisplay.style.display === 'block') {
+      setPriceText(prevPrice);
+    }
+  });
 
   /**
    * Core validation & pricing logic.
