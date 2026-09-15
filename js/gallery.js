@@ -13,36 +13,42 @@
   if (!mainImg || !thumbs.length || !prevBtn || !nextBtn) return;
 
   let currentIndex = 0;
+  let pendingSwap = null;
   const totalImages = thumbs.length;
 
   /**
-   * Update the main image with fade transition
+   * Update the main image with fade transition.
+   *
+   * currentIndex moves up front rather than inside the timeout: clicking faster
+   * than the 400ms fade used to queue several callbacks that each read a stale
+   * currentIndex, so the wrong thumbnail got un-highlighted and 'active' stuck
+   * on more than one at a time.
    */
   function updateImage(index) {
     if (index === currentIndex) return;
-    
+
+    clearTimeout(pendingSwap);
+
+    thumbs[currentIndex].classList.remove('active');
+    thumbs[index].classList.add('active');
+    currentIndex = index;
+
     // Fade out
     mainImg.classList.add('fade');
-    
-    // Update after fade completes
-    setTimeout(() => {
+
+    // Swap the source once the fade has played
+    pendingSwap = setTimeout(() => {
+      pendingSwap = null;
       const thumb = thumbs[index];
       mainImg.src = thumb.dataset.src;
       mainImg.alt = thumb.dataset.alt;
       mainImg.classList.remove('fade');
-      
-      // Update active thumb
-      thumbs[currentIndex].classList.remove('active');
-      thumbs[index].classList.add('active');
-      
-      // Scroll thumb into view
+
       thumb.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
         inline: 'center'
       });
-      
-      currentIndex = index;
     }, 400);
   }
 
@@ -71,12 +77,30 @@
   prevBtn.addEventListener('click', prevImage);
   nextBtn.addEventListener('click', nextImage);
 
-  // Keyboard navigation
+  // Keyboard navigation. The listener is on the document because the thumbnails
+  // are plain divs and never take focus, so scope it by hand instead: ignore
+  // keys meant for a field, and only steal the arrows while the gallery is
+  // actually on screen.
+  const gallery = mainImg.closest('.info-gallery-section') || mainImg.parentElement;
+
+  function isTyping() {
+    const el = document.activeElement;
+    if (!el) return false;
+    return el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName);
+  }
+
+  function galleryOnScreen() {
+    const r = gallery.getBoundingClientRect();
+    return r.bottom > 0 && r.top < (window.innerHeight || document.documentElement.clientHeight);
+  }
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') {
-      prevImage();
-    } else if (e.key === 'ArrowRight') {
-      nextImage();
-    }
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    if (isTyping() || !galleryOnScreen()) return;
+
+    e.preventDefault();
+    if (e.key === 'ArrowLeft') prevImage();
+    else nextImage();
   });
 })();
