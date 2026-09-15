@@ -197,10 +197,7 @@
 
   /** Animate price counter from previous value to target value */
   function animatePrice(targetValue, duration = 600) {
-    // requestAnimationFrame never fires while the tab is hidden, which would
-    // leave the price stuck at its starting value next to an enabled "Request
-    // this stay" button. Skip the animation and show the real number instead —
-    // same for anyone who asked for reduced motion.
+    // rAF never fires in a hidden tab, which would strand the price at €0.
     const reduceMotion = window.matchMedia
       && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -230,9 +227,7 @@
     requestAnimationFrame(update);
   }
 
-  // If the tab is backgrounded mid-animation the counter stops wherever it got
-  // to; snap it to the real total when the user comes back. prevPrice always
-  // holds the current target.
+  // Backgrounding mid-animation stops the counter; snap it on return.
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden && $priceDisplay.style.display === 'block') {
       setPriceText(prevPrice);

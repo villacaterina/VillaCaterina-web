@@ -25,7 +25,7 @@
   const MODE_CHECKOUT = 'checkout';
 
   let selectionState = MODE_CHECKIN;  // what the next click selects
-  let focusAfterRender = null;        // dateKey to re-focus once render() rebuilds the grid
+  let focusAfterRender = null;        // dateKey to re-focus after render()
   let checkinDate  = null;            // Date objects (local midnight)
   let checkoutDate = null;
 
@@ -65,11 +65,8 @@
   }
 
   /**
-   * A check-out day is not a night, so a day that is booked or out of season is
-   * still a legitimate day to leave on: Oct 29 -> Nov 1 is three in-season
-   * nights, and leaving on the day the next guest arrives occupies nothing.
-   * booking.js already prices and availability-checks the half-open range
-   * [check-in, check-out), so only the calendar needs to allow the click.
+   * A check-out day is not a night, so booked and off-season days are still
+   * valid to leave on. booking.js already prices [check-in, check-out).
    */
   function isCheckoutCandidate(d) {
     return selectionState === MODE_CHECKOUT
@@ -168,9 +165,7 @@
       $container.appendChild(warn);
     }
 
-    // Put the keyboard back on the day the user just picked. If that day is no
-    // longer selectable (it became a check-in, so it is now the range start),
-    // focus is simply left alone rather than jumping somewhere unrelated.
+    // Restore focus after the rebuild; if the day is no longer selectable, leave it.
     if (focusAfterRender) {
       const target = $container.querySelector(`[data-date="${focusAfterRender}"]`);
       focusAfterRender = null;
@@ -230,9 +225,7 @@
             cell.title = T('closedTooltip');
           }
 
-          // Unavailable as a night, but still a valid day to check out on.
-          // Recomputed every render, so once a range is set these go inert
-          // again — such a day can never become a check-in.
+          // Recomputed each render, so these go inert once a range is set.
           if (isCheckoutCandidate(cellDate)) {
             cell.classList.add('checkout-eligible');
             cell.title = T('checkoutOnly');
@@ -267,11 +260,7 @@
   // INTERACTION
   // ──────────────────────────────────────────────
 
-  /**
-   * Make a day cell pick a date when activated, by pointer or by keyboard.
-   * The cells are <div>s, so they need the button role, a tab stop and
-   * Enter/Space handling spelled out to be reachable without a mouse.
-   */
+  /** Cells are <div>s, so the button role and key handling are explicit. */
   function makeSelectable(cell, cellDate) {
     const picked = new Date(cellDate);
 
@@ -281,21 +270,19 @@
     cell.dataset.date = dateKey(picked);
 
     function activate() {
-      // render() rebuilds every cell, so remember where the keyboard was.
-      focusAfterRender = dateKey(picked);
+      focusAfterRender = dateKey(picked); // render() rebuilds every cell
       handleDateClick(new Date(picked));
     }
 
     cell.addEventListener('click', activate);
     cell.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-        e.preventDefault(); // Space would otherwise scroll the page
+        e.preventDefault();
         activate();
       }
     });
   }
 
-  /** Spoken label for a day cell, e.g. "18 September 2026 — Nur als Abreisedatum verfügbar". */
   function describeDate(d) {
     const label = `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
     if (isBlocked(d) || isClosedSeason(d)) return `${label} — ${T('checkoutOnly')}`;

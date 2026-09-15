@@ -63,15 +63,12 @@ After editing any root HTML page, regenerate the `it/`, `fr/`, `de/` versions:
 python3 scripts/build_i18n.py
 ```
 
-The English root pages are the single source of truth for page structure and chrome.
-The script also generates `sitemap.xml` and `robots.txt`.
-
-Review texts are **not** handled by this script — see below.
+The root pages are the source of truth. Also writes `sitemap.xml` and `robots.txt`.
 
 ### Adding a review
 
-Reviews live in `js/reviews.js`, in one of `bookingReviews`, `googleReviews` or
-`airbnbReviews`. Each entry looks like:
+Reviews live in `js/reviews.js`, in `bookingReviews`, `googleReviews` or
+`airbnbReviews`:
 
 ```js
 {
@@ -88,13 +85,12 @@ Reviews live in `js/reviews.js`, in one of `bookingReviews`, `googleReviews` or
 }
 ```
 
-At runtime `js/reviews.js` reads `<html lang>` and shows the matching translation
-with a "Show original" toggle; a review written in the page's own language shows
-as-is with no toggle, and one with no translation for that language falls back to
-the original. Array order does not matter — cards are sorted newest-first.
+The page shows the translation for its own language with a "Show original"
+toggle, or the original if there's no translation for it. Order doesn't matter —
+cards are sorted newest-first.
 
-Platform averages and the `aggregateRating` in the home page's structured data are
-both computed from these scores, so they never need updating by hand.
+Add `featured: true` to put a review on the home page. Platform averages and the
+`aggregateRating` in the structured data are computed from the scores.
 
 ### Sync availability (manual)
 
@@ -116,21 +112,20 @@ Pushes to `main` deploy automatically via GitHub Pages. The custom domain is con
 - `scripts/build_i18n.py` generates language subdirectories (`it/`, `fr/`, `de/`)
 - Client-side UI strings are handled by `js/i18n.js` (keyed off `<html lang>`)
 - Review texts carry their own translations in `js/reviews.js` (see "Adding a review")
-- `hreflang`, `canonical`, Open Graph and Twitter card tags are injected per language;
-  `og:title` / `og:description` are read from each page's already-translated
-  `<title>` and description, so there is nothing extra to keep in sync
+- `hreflang`, `canonical` and the social tags are injected per language;
+  `og:title` / `og:description` come from each page's translated `<title>` and
+  description, so there's nothing extra to keep in sync
 
 ## Content Security Policy
 
 The site uses a strict CSP (`script-src 'self'`, no inline scripts). Any new JavaScript must live in an external file under `js/`.
 
-The authoritative policy is the `<meta http-equiv>` tag in each page. `_headers`
-(Cloudflare/Netlify) and `.htaccess` (Apache) are **inert on GitHub Pages** — they are
-kept only so the headers travel with the repo if it is ever hosted elsewhere. Keep the
-`_headers` CSP in step with the meta tag when changing either.
+The `<meta http-equiv>` tag in each page is what actually applies. `_headers`
+(Cloudflare/Netlify) and `.htaccess` (Apache) do nothing on GitHub Pages — they're
+kept in case the site moves hosts, so keep them in step with the meta tag.
 
-`<script type="application/ld+json">` is a data block rather than executable script, so
-the structured data on the home page is not affected by `script-src`.
+`ld+json` is a data block, not executable script, so `script-src` doesn't block
+the structured data.
 
 ## License
 

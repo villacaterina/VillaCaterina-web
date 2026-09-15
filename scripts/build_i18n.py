@@ -28,8 +28,7 @@ ALL_LANGS = ['en'] + LANGS
 BASE_URL = 'https://villacaterina.casa'
 
 SITE_NAME = 'Villa Caterina'
-# Existing hero image — 1280x853. Absolute URL so it survives rewrite_paths and
-# so scrapers (which never resolve relative URLs) can fetch it.
+# Absolute — scrapers don't resolve relative URLs.
 OG_IMAGE = f'{BASE_URL}/assets/main.jpg'
 OG_IMAGE_SIZE = ('1280', '853')
 OG_IMAGE_ALT = 'Villa Caterina seen from the garden, overlooking Lake Como'
@@ -227,8 +226,7 @@ PAGE_STRINGS = {
     },
 
     'reviews.html': {
-        # NOTE: only the page chrome is translated here. The review texts are
-        # injected and translated at runtime by js/reviews.js.
+        # Only the page chrome — review texts are handled by js/reviews.js.
         'it': [
             ('<title>Reviews - Villa Caterina</title>', '<title>Recensioni - Villa Caterina</title>'),
             ('content="Guest reviews for Villa Caterina on Lake Como. What our visitors say about their stay."',
@@ -353,13 +351,8 @@ def read_description(html: str) -> str:
 
 
 def social_meta_block(html: str, page: str, lang: str) -> str:
-    """
-    Open Graph / Twitter card tags plus the canonical link.
-
-    Derived from the page's own <title> and description, so this runs AFTER the
-    translation replacements and each language gets correct values for free —
-    there are no social strings to maintain in PAGE_STRINGS.
-    """
+    """Open Graph / Twitter tags + canonical, read from the page's own title
+    and description. Must run after the translation replacements."""
     title = attr(read_title(html))
     desc = attr(read_description(html))
     url = page_url(page, lang)
@@ -397,14 +390,8 @@ def inject_social_meta(html: str, page: str, lang: str) -> str:
 
 
 def aggregate_rating() -> tuple:
-    """
-    (rating out of 5, review count) read straight out of js/reviews.js.
-
-    Parsed from the data rather than hardcoded so the structured data can never
-    disagree with the scores the reviews page actually renders. Booking.com
-    scores are out of 10 and are halved onto the 5-point scale the other two
-    platforms use.
-    """
+    """(rating out of 5, review count), parsed from js/reviews.js so it can't
+    drift from the page. Booking.com scores are out of 10, so they get halved."""
     src = (ROOT / 'js' / 'reviews.js').read_text(encoding='utf-8')
 
     total, count = 0.0, 0
@@ -422,13 +409,8 @@ def aggregate_rating() -> tuple:
 
 
 def structured_data_block(lang: str) -> str:
-    """
-    JSON-LD describing the property, so Google can show the star rating.
-
-    A <script type="application/ld+json"> is a data block, never executed, so
-    the strict `script-src 'self'` CSP does not apply to it (verified in-browser).
-    Only the home page carries it — one primary entity per site.
-    """
+    """JSON-LD for the property, so Google can show the star rating. Home page
+    only. ld+json is a data block, so `script-src 'self'` does not block it."""
     rating, count = aggregate_rating()
     data = {
         '@context': 'https://schema.org',
@@ -445,8 +427,7 @@ def structured_data_block(lang: str) -> str:
             'addressCountry': 'IT',
         },
         'email': 'villacaterina2020@gmail.com',
-        # Keep in step with getNightRate() in js/booking.js.
-        'priceRange': '\u20ac500-\u20ac720',
+        'priceRange': '\u20ac500-\u20ac720',  # see getNightRate() in js/booking.js
         'numberOfRooms': 3,
         'petsAllowed': False,
         'sameAs': [
@@ -530,7 +511,7 @@ def build_translation(src: str, page: str, lang: str) -> str:
             print(f'  WARNING [{lang}/{page}]: source string not found: {old[:70]!r}', file=sys.stderr)
             continue
         html = html.replace(old, new)
-    # After the replacements: og:title / og:description read the translated text.
+    # After the replacements, so og:title picks up the translated text.
     html = inject_social_meta(html, page, lang)
     html = inject_structured_data(html, page, lang)
     html = rewrite_paths(html)
@@ -556,11 +537,7 @@ def update_root_page(src: str, page: str) -> str:
 
 
 def write_sitemap() -> None:
-    """
-    sitemap.xml for every page in every language, each entry listing its
-    translations as xhtml:link alternates. Generated from PAGES/LANGS so it
-    cannot drift from the pages that actually exist.
-    """
+    """Every page in every language, with xhtml:link alternates."""
     out = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',

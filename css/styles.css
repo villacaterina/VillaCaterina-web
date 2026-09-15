@@ -67,20 +67,11 @@ a:hover {
 }
 
 /* ---------- Page transitions ---------- */
-/*
- * Cross-document View Transitions: the browser crossfades between pages on its
- * own, no JavaScript and no router. Browsers without support simply navigate
- * the way they always did, so this is pure progressive enhancement.
- */
 @view-transition {
   navigation: auto;
 }
 
-/*
- * The header is identical and fixed on every page. Giving it its own transition
- * name lifts it out of the full-page snapshot so it stays put while the content
- * underneath changes, instead of the whole viewport cross-fading at once.
- */
+/* Named separately so the header holds still while the content swaps. */
 .site-header {
   view-transition-name: site-header;
 }
@@ -102,12 +93,7 @@ a:hover {
 }
 
 /* ---------- Scroll reveal ---------- */
-/*
- * Driven by js/reveal.js. The hidden state is deliberately scoped to
- * .reveal-enabled, which that script only sets once it knows it can reveal
- * things again — so with JS off, no IntersectionObserver, or reduced motion,
- * the content is simply visible and none of this applies.
- */
+/* .reveal-enabled is set by js/reveal.js — without it nothing is hidden. */
 .reveal-enabled .reveal-pending {
   opacity: 0;
   transform: translateY(26px);
@@ -172,8 +158,6 @@ main {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  /* The artwork is a round badge with its own cream rim cropped to the edge of
-     the file, so it needs no extra ring — a white border here read as a gap. */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -568,7 +552,6 @@ main {
   visibility: hidden;
 }
 
-/* Selectable days are keyboard-reachable — show where the focus is. */
 .cal-cell:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
@@ -619,11 +602,7 @@ main {
   color: var(--color-text);
 }
 
-/*
- * A booked / off-season day while the user is picking a check-out date.
- * A check-out day is not a night, so leaving on one is fine — show it as
- * clickable without claiming the day itself is available.
- */
+/* Booked or off-season, but still valid to leave on. */
 .cal-cell.checkout-eligible {
   cursor: pointer;
   text-decoration: none;
@@ -1552,8 +1531,6 @@ main {
   margin-bottom: 2.5rem;
 }
 
-/* Three featured cards sit side by side; the shared masonry rule handles the
-   column count and collapses to one column on mobile. */
 .home-reviews .reviews-masonry {
   text-align: left;
 }
@@ -1653,8 +1630,7 @@ main {
   line-height: 1.7;
   margin-bottom: 1.5rem;
   font-style: italic;
-  /* Some reviews contain blank lines between paragraphs — keep them. */
-  white-space: pre-line;
+  white-space: pre-line; /* some reviews have paragraph breaks */
 }
 
 /* "Show original / Show translation" toggle on translated reviews */
@@ -2090,11 +2066,6 @@ main {
   }
 }
 /* ---------- Reduced motion ---------- */
-/*
- * Honour the OS "reduce motion" setting: keep every state change instant rather
- * than animated. Covers the page transitions, the price counter's CSS siblings,
- * hover lifts and the gallery fade.
- */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),

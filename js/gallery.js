@@ -18,11 +18,8 @@
 
   /**
    * Update the main image with fade transition.
-   *
-   * currentIndex moves up front rather than inside the timeout: clicking faster
-   * than the 400ms fade used to queue several callbacks that each read a stale
-   * currentIndex, so the wrong thumbnail got un-highlighted and 'active' stuck
-   * on more than one at a time.
+   * currentIndex moves before the timeout — clicking faster than the fade used
+   * to queue callbacks that each read a stale index and stranded 'active'.
    */
   function updateImage(index) {
     if (index === currentIndex) return;
@@ -77,10 +74,8 @@
   prevBtn.addEventListener('click', prevImage);
   nextBtn.addEventListener('click', nextImage);
 
-  // Keyboard navigation. The listener is on the document because the thumbnails
-  // are plain divs and never take focus, so scope it by hand instead: ignore
-  // keys meant for a field, and only steal the arrows while the gallery is
-  // actually on screen.
+  // Thumbnails are plain divs and never take focus, so the listener sits on the
+  // document and is scoped by hand instead.
   const gallery = mainImg.closest('.info-gallery-section') || mainImg.parentElement;
 
   function isTyping() {

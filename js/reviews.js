@@ -323,9 +323,8 @@
       reviewer: 'Oleksandr, UA',
       date: '2024-08',
       score: 10,
-      // originalLang is the language of the text, which is Russian here.
-      // It is independent of `reviewer`, which is the guest's own country tag.
-      originalLang: 'ru',
+      originalLang: 'ru', // language of the text, not the reviewer's country
+
       title: 'Отдыхали на вилле семьёй, три поколения, все в восторге!',
       text: 'Великолепный вид, комфортная вилла, хозяева продумали всё до мелочей! Большое им спасибо!',
       translations: {
@@ -643,7 +642,6 @@
     stars.className = 'review-stars';
     stars.innerHTML = starsHTML(isBooking ? scoreToStars(review.score) : review.score);
 
-    // On the home page the cards are mixed together, so each says where it came from.
     if (platformName) {
       var badge = document.createElement('span');
       badge.className = 'review-platform';
@@ -660,7 +658,6 @@
     card.appendChild(stars);
     card.appendChild(text);
 
-    // "Show original" / "Show translation" toggle for translated reviews.
     if (view.showToggle) {
       var btn = document.createElement('button');
       btn.type = 'button';
@@ -701,9 +698,8 @@
     return card;
   }
 
+  /** Newest first — 'YYYY-MM' sorts as a plain string. */
   function renderReviews(gridEl, reviews, isBooking) {
-    // Newest first. 'YYYY-MM' sorts correctly as a plain string, so the source
-    // arrays can stay in whatever order reviews were pasted in.
     reviews.slice()
       .sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); })
       .forEach(function (r) {
@@ -711,10 +707,7 @@
       });
   }
 
-  /**
-   * Mean score of a platform's reviews, formatted for the page language
-   * (German reads '9,8'). `decimals` matches each platform's own convention.
-   */
+  /** Mean score, formatted for the page language (German reads '9,8'). */
   function averageScore(reviews, decimals) {
     if (!reviews.length) return '';
     var sum = reviews.reduce(function (acc, r) { return acc + r.score; }, 0);
@@ -726,10 +719,7 @@
     });
   }
 
-  /**
-   * The three sources, with how each one scores and where it mounts.
-   * `decimals` follows each platform's own convention.
-   */
+  /** `decimals` follows each platform's own convention. */
   var PLATFORMS = [
     { name: 'Booking.com', reviews: bookingReviews, isBooking: true,
       gridId: 'reviews-booking', scoreId: 'booking-score', decimals: 1 },
@@ -739,7 +729,7 @@
       gridId: 'reviews-google', scoreId: 'google-score', decimals: 1 }
   ];
 
-  /** Every review across all platforms, normalised onto the 5-point scale. */
+  /** All platforms, normalised onto the 5-point scale. */
   function overallRating() {
     var total = 0, count = 0;
     PLATFORMS.forEach(function (p) {
@@ -753,11 +743,7 @@
 
   // ── Mount ──
 
-  /**
-   * Render one platform's grid and its average score. The score is computed
-   * from the data rather than hardcoded, so it can't drift when a review is
-   * added. The value in the HTML stays as the no-JS fallback.
-   */
+  /** The score is computed here; the HTML value is the no-JS fallback. */
   function mountPlatform(p) {
     var grid = document.getElementById(p.gridId);
     if (!grid) return;
@@ -766,11 +752,7 @@
     if (score) score.textContent = averageScore(p.reviews, p.decimals);
   }
 
-  /**
-   * Home page: the reviews marked `featured: true`, plus the overall rating.
-   * Does nothing on pages without the container, so this file is safe to load
-   * anywhere.
-   */
+  /** Home page: reviews marked `featured`, plus the overall rating. */
   function mountFeatured() {
     var grid = document.getElementById('reviews-featured');
     if (!grid) return;

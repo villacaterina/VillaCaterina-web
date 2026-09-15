@@ -3,8 +3,7 @@
  * Language is selected from the page's <html lang="…"> attribute.
  * Loaded BEFORE booking.js / calendar.js / contact.js, which read window.VC_I18N.
  *
- * Review texts carry their own translations in js/reviews.js; the keys here
- * cover the surrounding UI (including the show-original toggle labels).
+ * Review texts carry their own translations in js/reviews.js.
  */
 
 (function () {
