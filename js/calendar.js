@@ -66,13 +66,19 @@
 
   /**
    * A check-out day is not a night, so booked and off-season days are still
-   * valid to leave on. booking.js already prices [check-in, check-out).
+   * valid to leave on — but only if every night up to it is free, otherwise the
+   * stay would span someone else's booking.
    */
   function isCheckoutCandidate(d) {
-    return selectionState === MODE_CHECKOUT
-      && checkinDate !== null
-      && !isPast(d)
-      && d > checkinDate;
+    if (selectionState !== MODE_CHECKOUT || checkinDate === null) return false;
+    if (isPast(d) || d <= checkinDate) return false;
+
+    const night = new Date(checkinDate);
+    while (night < d) {
+      if (isBlocked(night) || isClosedSeason(night)) return false;
+      night.setDate(night.getDate() + 1);
+    }
+    return true;
   }
 
   function sameDay(a, b) {
@@ -217,13 +223,10 @@
         if (isPast(cellDate)) {
           cell.classList.add('past');
         } else if (isBlocked(cellDate) || isClosedSeason(cellDate)) {
-          if (isBlocked(cellDate)) {
-            cell.classList.add('blocked');
-            cell.title = T('alreadyBooked');
-          } else {
-            cell.classList.add('closed');
-            cell.title = T('closedTooltip');
-          }
+          const reason = isBlocked(cellDate) ? 'alreadyBooked' : 'closedTooltip';
+          cell.classList.add(isBlocked(cellDate) ? 'blocked' : 'closed');
+          cell.title = T(reason);
+          cell.setAttribute('aria-label', dayLabel(cellDate) + ' — ' + T(reason));
 
           // Recomputed each render, so these go inert once a range is set.
           if (isCheckoutCandidate(cellDate)) {
@@ -283,10 +286,13 @@
     });
   }
 
+  function dayLabel(d) {
+    return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
   function describeDate(d) {
-    const label = `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-    if (isBlocked(d) || isClosedSeason(d)) return `${label} — ${T('checkoutOnly')}`;
-    return label;
+    if (isBlocked(d) || isClosedSeason(d)) return `${dayLabel(d)} — ${T('checkoutOnly')}`;
+    return dayLabel(d);
   }
 
   function handleDateClick(d) {
