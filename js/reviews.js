@@ -697,30 +697,38 @@
       });
   }
 
+  /**
+   * Mean score of a platform's reviews, formatted for the page language
+   * (German reads '9,8'). `decimals` matches each platform's own convention.
+   */
+  function averageScore(reviews, decimals) {
+    if (!reviews.length) return '';
+    var sum = reviews.reduce(function (acc, r) { return acc + r.score; }, 0);
+    var avg = sum / reviews.length;
+    var locale = I18N ? I18N.locale : 'en-US';
+    return avg.toLocaleString(locale, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }
+
   // ── Mount ──
 
-  var bookingGrid  = document.getElementById('reviews-booking');
-  var airbnbGrid   = document.getElementById('reviews-airbnb');
-  var googleGrid   = document.getElementById('reviews-google');
-
-  if (bookingGrid) {
-    renderReviews(bookingGrid, bookingReviews, true);
-    // Show Booking.com average
-    var bookingScore = document.getElementById('booking-score');
-    if (bookingScore) bookingScore.textContent = '9.8';
+  /**
+   * Render one platform's grid and its average score. The score is computed
+   * from the data rather than hardcoded, so it can't drift when a review is
+   * added. The value in the HTML stays as the no-JS fallback.
+   */
+  function mountPlatform(gridId, scoreId, reviews, isBooking, decimals) {
+    var grid = document.getElementById(gridId);
+    if (!grid) return;
+    renderReviews(grid, reviews, isBooking);
+    var score = document.getElementById(scoreId);
+    if (score) score.textContent = averageScore(reviews, decimals);
   }
 
-  if (googleGrid) {
-    renderReviews(googleGrid, googleReviews, false);
-    // Show Google average
-    var googleScore = document.getElementById('google-score');
-    if (googleScore) googleScore.textContent = '5.0';
-  }
-
-  if (airbnbGrid) {
-    renderReviews(airbnbGrid, airbnbReviews, false);
-    var airbnbScore = document.getElementById('airbnb-score');
-    if (airbnbScore) airbnbScore.textContent = '4.67';
-  }
+  mountPlatform('reviews-booking', 'booking-score', bookingReviews, true, 1);
+  mountPlatform('reviews-airbnb', 'airbnb-score', airbnbReviews, false, 2);
+  mountPlatform('reviews-google', 'google-score', googleReviews, false, 1);
 
 })();
