@@ -105,6 +105,10 @@ PAGE_STRINGS = {
             ('<h2>A Timeless Escape</h2>', '<h2>Una fuga senza tempo</h2>'),
             ('Nestled on the shores of Lake Como, Villa Caterina offers an unparalleled \n          experience of Italian luxury. Our historic villa combines centuries of heritage \n          with contemporary amenities, providing the perfect sanctuary for discerning travelers \n          seeking privacy, beauty, and authentic Italian charm.',
              'Adagiata sulle rive del Lago di Como, Villa Caterina offre un\u2019esperienza impareggiabile di lusso italiano. La nostra villa storica unisce secoli di storia a comfort contemporanei, offrendo il rifugio perfetto per viaggiatori esigenti in cerca di privacy, bellezza e autentico fascino italiano.'),
+            ('<h2>Loved by Our Guests</h2>', '<h2>Amata dai nostri ospiti</h2>'),
+            ('>Read all reviews<', '>Leggi tutte le recensioni<'),
+            ('<p class="home-reviews-count" id="home-review-count">from 23 guest reviews</p>',
+             '<p class="home-reviews-count" id="home-review-count">da 23 recensioni degli ospiti</p>'),
         ],
         'fr': [
             ('<title>Villa Caterina - Lake Como Luxury Retreat</title>',
@@ -125,6 +129,10 @@ PAGE_STRINGS = {
             ('<h2>A Timeless Escape</h2>', '<h2>Une évasion intemporelle</h2>'),
             ('Nestled on the shores of Lake Como, Villa Caterina offers an unparalleled \n          experience of Italian luxury. Our historic villa combines centuries of heritage \n          with contemporary amenities, providing the perfect sanctuary for discerning travelers \n          seeking privacy, beauty, and authentic Italian charm.',
              'Nichée sur les rives du lac de Côme, la Villa Caterina offre une expérience inégalée du luxe italien. Notre villa historique allie des siècles de patrimoine à des équipements contemporains, offrant le refuge idéal aux voyageurs exigeants en quête d\u2019intimité, de beauté et de charme italien authentique.'),
+            ('<h2>Loved by Our Guests</h2>', '<h2>Appréciée par nos hôtes</h2>'),
+            ('>Read all reviews<', '>Lire tous les avis<'),
+            ('<p class="home-reviews-count" id="home-review-count">from 23 guest reviews</p>',
+             '<p class="home-reviews-count" id="home-review-count">sur 23 avis de voyageurs</p>'),
         ],
         'de': [
             ('<title>Villa Caterina - Lake Como Luxury Retreat</title>',
@@ -145,6 +153,10 @@ PAGE_STRINGS = {
             ('<h2>A Timeless Escape</h2>', '<h2>Eine zeitlose Auszeit</h2>'),
             ('Nestled on the shores of Lake Como, Villa Caterina offers an unparalleled \n          experience of Italian luxury. Our historic villa combines centuries of heritage \n          with contemporary amenities, providing the perfect sanctuary for discerning travelers \n          seeking privacy, beauty, and authentic Italian charm.',
              'Eingebettet am Ufer des Comer Sees bietet die Villa Caterina ein unvergleichliches Erlebnis italienischen Luxus. Unsere historische Villa verbindet jahrhundertealtes Erbe mit zeitgemäßer Ausstattung und ist das perfekte Refugium für anspruchsvolle Reisende, die Privatsphäre, Schönheit und authentischen italienischen Charme suchen.'),
+            ('<h2>Loved by Our Guests</h2>', '<h2>Von unseren Gästen geliebt</h2>'),
+            ('>Read all reviews<', '>Alle Bewertungen lesen<'),
+            ('<p class="home-reviews-count" id="home-review-count">from 23 guest reviews</p>',
+             '<p class="home-reviews-count" id="home-review-count">aus 23 Gästebewertungen</p>'),
         ],
     },
 

@@ -76,6 +76,7 @@
       msgTemplate: 'Hello,\n\nI would like to request a booking at Villa Caterina:\n\n  Check-in:  {checkin}\n  Check-out: {checkout}\n  Guests:    {guests}\n  Duration:  {nights} {nightsWord}\n\n  Estimated Total Price: €{price}\n\nPlease confirm availability and let me know the next steps.\n\nThank you,',
 
       // Reviews page
+      reviewsFrom: 'from {n} guest reviews',
       showOriginal: 'Show original ({lang})',
       showTranslation: 'Show translation ({lang})',
       langNames: { en: 'English', it: 'Italian', de: 'German', fr: 'French', pl: 'Polish', da: 'Danish', uk: 'Ukrainian', ru: 'Russian' },
@@ -142,6 +143,7 @@
       msgTemplate: 'Buongiorno,\n\nvorrei richiedere una prenotazione presso Villa Caterina:\n\n  Check-in:  {checkin}\n  Check-out: {checkout}\n  Ospiti:    {guests}\n  Durata:    {nights} {nightsWord}\n\n  Prezzo totale stimato: €{price}\n\nVi prego di confermare la disponibilità e indicarmi i prossimi passi.\n\nGrazie,',
 
       // Reviews page
+      reviewsFrom: 'da {n} recensioni degli ospiti',
       showOriginal: 'Mostra originale ({lang})',
       showTranslation: 'Mostra traduzione ({lang})',
       langNames: { en: 'Inglese', it: 'Italiano', de: 'Tedesco', fr: 'Francese', pl: 'Polacco', da: 'Danese', uk: 'Ucraino', ru: 'Russo' },
@@ -208,6 +210,7 @@
       msgTemplate: 'Bonjour,\n\nje souhaite demander une réservation à la Villa Caterina :\n\n  Arrivée :  {checkin}\n  Départ :   {checkout}\n  Voyageurs : {guests}\n  Durée :    {nights} {nightsWord}\n\n  Prix total estimé : {price} €\n\nMerci de confirmer la disponibilité et de m\u2019indiquer les prochaines étapes.\n\nCordialement,',
 
       // Reviews page
+      reviewsFrom: 'sur {n} avis de voyageurs',
       showOriginal: 'Afficher l\u2019original ({lang})',
       showTranslation: 'Afficher la traduction ({lang})',
       langNames: { en: 'Anglais', it: 'Italien', de: 'Allemand', fr: 'Français', pl: 'Polonais', da: 'Danois', uk: 'Ukrainien', ru: 'Russe' },
@@ -274,6 +277,7 @@
       msgTemplate: 'Guten Tag,\n\nich möchte eine Buchung in der Villa Caterina anfragen:\n\n  Anreise:  {checkin}\n  Abreise:  {checkout}\n  Gäste:    {guests}\n  Dauer:    {nights} {nightsWord}\n\n  Geschätzter Gesamtpreis: {price} €\n\nBitte bestätigen Sie die Verfügbarkeit und teilen Sie mir die nächsten Schritte mit.\n\nVielen Dank,',
 
       // Reviews page
+      reviewsFrom: 'aus {n} Gästebewertungen',
       showOriginal: 'Original anzeigen ({lang})',
       showTranslation: 'Übersetzung anzeigen ({lang})',
       langNames: { en: 'Englisch', it: 'Italienisch', de: 'Deutsch', fr: 'Französisch', pl: 'Polnisch', da: 'Dänisch', uk: 'Ukrainisch', ru: 'Russisch' },

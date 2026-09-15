@@ -156,6 +156,7 @@
       reviewer: 'Sultan, SA',
       date: '2025-06',
       score: 10,
+      featured: true,
       originalLang: 'en',
       title: 'Big Villa with great location',
       text: 'Lovely Villa with great location. The villa is large and suitable for a big family with three bedrooms and three bathrooms. There is a garden with a path leading down to the lake and the main road, and it is very close to the ferry station — five minutes walk. Special thanks to Simona for her great support all the time, and thank you Lina for welcoming us and explaining the Villa facilities.',
@@ -461,6 +462,7 @@
       reviewer: 'Thorben Wulff',
       date: '2026-01',
       score: 5,
+      featured: true,
       originalLang: 'de',
       text: 'Wundersch\u00f6ne Villa mit fantastischem Blick auf den Comer See! Wundervoll eingerichtet und sehr freundliche Gastgeber!',
       translations: {
@@ -486,6 +488,7 @@
       reviewer: 'Mebrat And Assefa',
       date: '2026-06',
       score: 5,
+      featured: true,
       originalLang: 'en',
       text: 'Villa Caterina, is very beautiful with a stunning view of the mountains and the lake! Highly recommend it and if I come back to Lake Como it will be my first choice! Great for families, all will be very comfortable, lots of space. The place exceeded my expectations! Thank you!',
       translations: {
@@ -632,13 +635,21 @@
     return { title: original.title, text: original.text, showToggle: false };
   }
 
-  function createCard(review, isBooking) {
+  function createCard(review, isBooking, platformName) {
     var card = document.createElement('article');
     card.className = 'review-card';
 
     var stars = document.createElement('div');
     stars.className = 'review-stars';
     stars.innerHTML = starsHTML(isBooking ? scoreToStars(review.score) : review.score);
+
+    // On the home page the cards are mixed together, so each says where it came from.
+    if (platformName) {
+      var badge = document.createElement('span');
+      badge.className = 'review-platform';
+      badge.textContent = platformName;
+      stars.appendChild(badge);
+    }
 
     var view = displayFor(review);
 
@@ -715,6 +726,31 @@
     });
   }
 
+  /**
+   * The three sources, with how each one scores and where it mounts.
+   * `decimals` follows each platform's own convention.
+   */
+  var PLATFORMS = [
+    { name: 'Booking.com', reviews: bookingReviews, isBooking: true,
+      gridId: 'reviews-booking', scoreId: 'booking-score', decimals: 1 },
+    { name: 'Airbnb', reviews: airbnbReviews, isBooking: false,
+      gridId: 'reviews-airbnb', scoreId: 'airbnb-score', decimals: 2 },
+    { name: 'Google Maps', reviews: googleReviews, isBooking: false,
+      gridId: 'reviews-google', scoreId: 'google-score', decimals: 1 }
+  ];
+
+  /** Every review across all platforms, normalised onto the 5-point scale. */
+  function overallRating() {
+    var total = 0, count = 0;
+    PLATFORMS.forEach(function (p) {
+      p.reviews.forEach(function (r) {
+        total += p.isBooking ? r.score / 2 : r.score;
+        count++;
+      });
+    });
+    return { rating: count ? total / count : 0, count: count };
+  }
+
   // ── Mount ──
 
   /**
@@ -722,16 +758,55 @@
    * from the data rather than hardcoded, so it can't drift when a review is
    * added. The value in the HTML stays as the no-JS fallback.
    */
-  function mountPlatform(gridId, scoreId, reviews, isBooking, decimals) {
-    var grid = document.getElementById(gridId);
+  function mountPlatform(p) {
+    var grid = document.getElementById(p.gridId);
     if (!grid) return;
-    renderReviews(grid, reviews, isBooking);
-    var score = document.getElementById(scoreId);
-    if (score) score.textContent = averageScore(reviews, decimals);
+    renderReviews(grid, p.reviews, p.isBooking);
+    var score = document.getElementById(p.scoreId);
+    if (score) score.textContent = averageScore(p.reviews, p.decimals);
   }
 
-  mountPlatform('reviews-booking', 'booking-score', bookingReviews, true, 1);
-  mountPlatform('reviews-airbnb', 'airbnb-score', airbnbReviews, false, 2);
-  mountPlatform('reviews-google', 'google-score', googleReviews, false, 1);
+  /**
+   * Home page: the reviews marked `featured: true`, plus the overall rating.
+   * Does nothing on pages without the container, so this file is safe to load
+   * anywhere.
+   */
+  function mountFeatured() {
+    var grid = document.getElementById('reviews-featured');
+    if (!grid) return;
+
+    var picks = [];
+    PLATFORMS.forEach(function (p) {
+      p.reviews.forEach(function (r) {
+        if (r.featured) picks.push({ review: r, platform: p });
+      });
+    });
+    picks.sort(function (a, b) {
+      return String(b.review.date).localeCompare(String(a.review.date));
+    });
+    picks.forEach(function (pick) {
+      grid.appendChild(createCard(pick.review, pick.platform.isBooking, pick.platform.name));
+    });
+
+    var summary = overallRating();
+    var locale = I18N ? I18N.locale : 'en-US';
+
+    var ratingEl = document.getElementById('home-rating');
+    if (ratingEl) {
+      ratingEl.textContent = summary.rating.toLocaleString(locale, {
+        minimumFractionDigits: 1, maximumFractionDigits: 1
+      });
+    }
+
+    var countEl = document.getElementById('home-review-count');
+    if (countEl) {
+      countEl.textContent = I18N
+        ? I18N.t('reviewsFrom', { n: summary.count })
+        : 'from ' + summary.count + ' guest reviews';
+    }
+  }
+
+  PLATFORMS.forEach(mountPlatform);
+  mountFeatured();
 
 })();

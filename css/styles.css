@@ -1209,6 +1209,14 @@ main {
     margin-bottom: 2rem;
   }
 
+  .home-reviews h2 {
+    font-size: 1.5rem;
+  }
+
+  .home-reviews-score {
+    font-size: 2.25rem;
+  }
+
   /* --- Reviews page: tighter on mobile --- */
   .reviews-intro {
     padding: 2.5rem 0 2rem;
@@ -1518,6 +1526,73 @@ main {
   object-fit: cover;
 }
 
+/* ---------- Home page: guest reviews ---------- */
+.home-reviews {
+  padding: 1rem 0 5rem;
+  text-align: center;
+}
+
+.home-reviews h2 {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.home-reviews-score {
+  font-family: var(--font-serif);
+  font-size: 2.75rem;
+  line-height: 1;
+  color: var(--color-accent);
+}
+
+.home-reviews-count {
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Three featured cards sit side by side; the shared masonry rule handles the
+   column count and collapses to one column on mobile. */
+.home-reviews .reviews-masonry {
+  text-align: left;
+}
+
+.review-platform {
+  margin-left: auto;
+  align-self: center;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.home-reviews-more {
+  margin-top: 1rem;
+}
+
+.btn-outline {
+  display: inline-block;
+  padding: 0.85rem 2rem;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius);
+  color: var(--color-accent);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background var(--transition), color var(--transition);
+}
+
+.btn-outline:hover {
+  background: var(--color-accent);
+  color: #fff;
+}
+
 /* ---------- Reviews Page ---------- */
 .reviews-intro {
   padding: 4rem 0 3rem;
@@ -1824,6 +1899,14 @@ main {
 }
 
 /* ---------- Dark: reviews ---------- */
+[data-theme="dark"] .btn-outline {
+  border-color: var(--color-accent-light);
+  color: var(--color-accent-light);
+}
+[data-theme="dark"] .btn-outline:hover {
+  background: var(--color-accent-light);
+  color: #0f172a;
+}
 [data-theme="dark"] .review-card {
   background: var(--color-card);
 }
