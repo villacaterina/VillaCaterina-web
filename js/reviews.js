@@ -688,9 +688,13 @@
   }
 
   function renderReviews(gridEl, reviews, isBooking) {
-    reviews.forEach(function (r) {
-      gridEl.appendChild(createCard(r, isBooking));
-    });
+    // Newest first. 'YYYY-MM' sorts correctly as a plain string, so the source
+    // arrays can stay in whatever order reviews were pasted in.
+    reviews.slice()
+      .sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); })
+      .forEach(function (r) {
+        gridEl.appendChild(createCard(r, isBooking));
+      });
   }
 
   // ── Mount ──
