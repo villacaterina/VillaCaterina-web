@@ -1985,4 +1985,23 @@ main {
     column-count: 1;
   }
 }
+/* ---------- Reduced motion ---------- */
+/*
+ * Honour the OS "reduce motion" setting: keep every state change instant rather
+ * than animated. Covers the page transitions, the price counter's CSS siblings,
+ * hover lifts and the gallery fade.
+ */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
