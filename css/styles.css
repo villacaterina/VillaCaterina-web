@@ -511,6 +511,13 @@ main {
   visibility: hidden;
 }
 
+/* Selectable days are keyboard-reachable — show where the focus is. */
+.cal-cell:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  z-index: 1;
+}
+
 .cal-cell.past,
 .cal-cell.blocked {
   background: transparent;

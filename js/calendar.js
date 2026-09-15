@@ -25,6 +25,7 @@
   const MODE_CHECKOUT = 'checkout';
 
   let selectionState = MODE_CHECKIN;  // what the next click selects
+  let focusAfterRender = null;        // dateKey to re-focus once render() rebuilds the grid
   let checkinDate  = null;            // Date objects (local midnight)
   let checkoutDate = null;
 
@@ -166,6 +167,15 @@
       warn.textContent = T('calLoadFailed');
       $container.appendChild(warn);
     }
+
+    // Put the keyboard back on the day the user just picked. If that day is no
+    // longer selectable (it became a check-in, so it is now the range start),
+    // focus is simply left alone rather than jumping somewhere unrelated.
+    if (focusAfterRender) {
+      const target = $container.querySelector(`[data-date="${focusAfterRender}"]`);
+      focusAfterRender = null;
+      if (target) target.focus();
+    }
   }
 
   function renderMonth(year, month) {
@@ -257,10 +267,39 @@
   // INTERACTION
   // ──────────────────────────────────────────────
 
-  /** Make a day cell pick a date when activated. */
+  /**
+   * Make a day cell pick a date when activated, by pointer or by keyboard.
+   * The cells are <div>s, so they need the button role, a tab stop and
+   * Enter/Space handling spelled out to be reachable without a mouse.
+   */
   function makeSelectable(cell, cellDate) {
     const picked = new Date(cellDate);
-    cell.addEventListener('click', () => handleDateClick(new Date(picked)));
+
+    cell.setAttribute('role', 'button');
+    cell.setAttribute('tabindex', '0');
+    cell.setAttribute('aria-label', describeDate(picked));
+    cell.dataset.date = dateKey(picked);
+
+    function activate() {
+      // render() rebuilds every cell, so remember where the keyboard was.
+      focusAfterRender = dateKey(picked);
+      handleDateClick(new Date(picked));
+    }
+
+    cell.addEventListener('click', activate);
+    cell.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault(); // Space would otherwise scroll the page
+        activate();
+      }
+    });
+  }
+
+  /** Spoken label for a day cell, e.g. "18 September 2026 — Nur als Abreisedatum verfügbar". */
+  function describeDate(d) {
+    const label = `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+    if (isBlocked(d) || isClosedSeason(d)) return `${label} — ${T('checkoutOnly')}`;
+    return label;
   }
 
   function handleDateClick(d) {
