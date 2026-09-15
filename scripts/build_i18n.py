@@ -22,7 +22,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PAGES = ['index.html', 'info.html', 'reviews.html', 'contact.html']
 LANGS = ['it', 'fr', 'de']
+ALL_LANGS = ['en'] + LANGS
 BASE_URL = 'https://villacaterina.casa'
+
+SITE_NAME = 'Villa Caterina'
+# Existing hero image — 1280x853. Absolute URL so it survives rewrite_paths and
+# so scrapers (which never resolve relative URLs) can fetch it.
+OG_IMAGE = f'{BASE_URL}/assets/main.jpg'
+OG_IMAGE_SIZE = ('1280', '853')
+OG_IMAGE_ALT = 'Villa Caterina seen from the garden, overlooking Lake Como'
+OG_LOCALES = {'en': 'en_US', 'it': 'it_IT', 'fr': 'fr_FR', 'de': 'de_DE'}
 
 # ────────────────────────────────────────────────
 # Shared strings (header, footer) — every page
@@ -308,6 +317,70 @@ def hreflang_block(page: str) -> str:
     return '\n'.join(lines)
 
 
+def page_url(page: str, lang: str) -> str:
+    """Canonical URL for one page in one language."""
+    return f'{BASE_URL}/{page}' if lang == 'en' else f'{BASE_URL}/{lang}/{page}'
+
+
+def attr(value: str) -> str:
+    """Escape a string for use inside a double-quoted HTML attribute."""
+    return value.replace('&', '&amp;').replace('"', '&quot;')
+
+
+def read_title(html: str) -> str:
+    m = re.search(r'<title>(.*?)</title>', html, re.S)
+    return m.group(1).strip() if m else SITE_NAME
+
+
+def read_description(html: str) -> str:
+    m = re.search(r'<meta name="description" content="(.*?)">', html, re.S)
+    return m.group(1).strip() if m else ''
+
+
+def social_meta_block(html: str, page: str, lang: str) -> str:
+    """
+    Open Graph / Twitter card tags plus the canonical link.
+
+    Derived from the page's own <title> and description, so this runs AFTER the
+    translation replacements and each language gets correct values for free —
+    there are no social strings to maintain in PAGE_STRINGS.
+    """
+    title = attr(read_title(html))
+    desc = attr(read_description(html))
+    url = page_url(page, lang)
+    width, height = OG_IMAGE_SIZE
+
+    lines = [
+        f'  <link rel="canonical" href="{url}">',
+        '  <meta property="og:type" content="website">',
+        f'  <meta property="og:site_name" content="{SITE_NAME}">',
+        f'  <meta property="og:title" content="{title}">',
+        f'  <meta property="og:description" content="{desc}">',
+        f'  <meta property="og:url" content="{url}">',
+        f'  <meta property="og:image" content="{OG_IMAGE}">',
+        f'  <meta property="og:image:width" content="{width}">',
+        f'  <meta property="og:image:height" content="{height}">',
+        f'  <meta property="og:image:alt" content="{attr(OG_IMAGE_ALT)}">',
+        f'  <meta property="og:locale" content="{OG_LOCALES[lang]}">',
+    ]
+    for other in ALL_LANGS:
+        if other != lang:
+            lines.append(f'  <meta property="og:locale:alternate" content="{OG_LOCALES[other]}">')
+    lines += [
+        '  <meta name="twitter:card" content="summary_large_image">',
+        f'  <meta name="twitter:title" content="{title}">',
+        f'  <meta name="twitter:description" content="{desc}">',
+        f'  <meta name="twitter:image" content="{OG_IMAGE}">',
+        f'  <meta name="twitter:image:alt" content="{attr(OG_IMAGE_ALT)}">',
+    ]
+    return '\n'.join(lines)
+
+
+def inject_social_meta(html: str, page: str, lang: str) -> str:
+    marker = '  <link rel="icon"'
+    return html.replace(marker, social_meta_block(html, page, lang) + '\n' + marker, 1)
+
+
 def lang_switch_block(page: str, active: str) -> str:
     """Language switcher markup. Uses root-absolute URLs so it works from any depth."""
     parts = []
@@ -365,6 +438,8 @@ def build_translation(src: str, page: str, lang: str) -> str:
             print(f'  WARNING [{lang}/{page}]: source string not found: {old[:70]!r}', file=sys.stderr)
             continue
         html = html.replace(old, new)
+    # After the replacements: og:title / og:description read the translated text.
+    html = inject_social_meta(html, page, lang)
     html = rewrite_paths(html)
     html = inject_lang_switch(html, page, lang)
     html = inject_i18n_script(html, '../')
@@ -380,6 +455,8 @@ def update_root_page(src: str, page: str) -> str:
         html = inject_lang_switch(html, page, 'en')
     if 'js/i18n.js' not in html:
         html = inject_i18n_script(html, '')
+    if 'og:title' not in html:
+        html = inject_social_meta(html, page, 'en')
     return html
 
 
@@ -402,6 +479,9 @@ def main() -> int:
         base = updated_root
         # Strip the previously-injected EN artifacts so translation starts clean
         base = re.sub(r'  <link rel="alternate" hreflang=[^\n]*\n', '', base)
+        base = re.sub(r'  <link rel="canonical"[^\n]*\n', '', base)
+        base = re.sub(r'  <meta property="og:[^\n]*\n', '', base)
+        base = re.sub(r'  <meta name="twitter:[^\n]*\n', '', base)
         base = re.sub(r'\s*<div class="lang-switch">.*?</div>', '', base)
         base = base.replace('<script src="js/i18n.js"></script>\n  ', '')
 
