@@ -3,6 +3,7 @@
  * Renders guest reviews grouped by platform (Booking.com, Airbnb, Google Maps).
  *
  * Each review carries:
+ *   date         — 'YYYY-MM'; rendered in the page language via I18N.months
  *   originalLang — the language the guest actually wrote in ('en', 'de', …)
  *   translations — { <lang>: { title, text } } human translations into other
  *                  site languages. `title`/`text` always hold the ORIGINAL text.
@@ -21,7 +22,7 @@
   const bookingReviews = [
     {
       reviewer: 'Heidi, AU',
-      date: 'July 2026',
+      date: '2026-07',
       score: 10,
       originalLang: 'en',
       title: 'We thoroughly enjoyed staying as a family group at this elegant Villa.',
@@ -43,7 +44,7 @@
     },
     {
       reviewer: 'John, US',
-      date: 'September 2025',
+      date: '2025-09',
       score: 10,
       originalLang: 'en',
       title: 'A happy return to a magnificent villa on beautiful Lake Como in Cadenabbia.',
@@ -65,7 +66,7 @@
     },
     {
       reviewer: 'Larisa, RU',
-      date: 'August 2025',
+      date: '2025-08',
       score: 10,
       originalLang: 'en',
       title: 'We had a really great experience to explore all sightseeing places of Como, staying at nice Villa Caterina Griante',
@@ -87,7 +88,7 @@
     },
     {
       reviewer: 'Rashpal, GB',
-      date: 'July 2025',
+      date: '2025-07',
       score: 10,
       originalLang: 'en',
       title: '',
@@ -109,7 +110,7 @@
     },
     {
       reviewer: 'Heinz, CH',
-      date: 'July 2025',
+      date: '2025-07',
       score: 10,
       originalLang: 'de',
       title: 'Es hat alles gepasst und war wunderschön',
@@ -131,7 +132,7 @@
     },
     {
       reviewer: 'Hervé, FR',
-      date: 'June 2025',
+      date: '2025-06',
       score: 9,
       originalLang: 'fr',
       title: '',
@@ -153,7 +154,7 @@
     },
     {
       reviewer: 'Sultan, SA',
-      date: 'June 2025',
+      date: '2025-06',
       score: 10,
       originalLang: 'en',
       title: 'Big Villa with great location',
@@ -175,7 +176,7 @@
     },
     {
       reviewer: 'Beata, PL',
-      date: 'June 2025',
+      date: '2025-06',
       score: 8,
       originalLang: 'pl',
       title: '',
@@ -201,7 +202,7 @@
     },
     {
       reviewer: 'Wioleta, PL',
-      date: 'May 2025',
+      date: '2025-05',
       score: 10,
       originalLang: 'pl',
       title: 'Cudowne miejsce',
@@ -227,7 +228,7 @@
     },
     {
       reviewer: 'Christina, DK',
-      date: 'April 2025',
+      date: '2025-04',
       score: 10,
       originalLang: 'da',
       title: 'Skønt ophold',
@@ -253,7 +254,7 @@
     },
     {
       reviewer: 'Orlin Radev, BG',
-      date: 'October 2024',
+      date: '2024-10',
       score: 10,
       originalLang: 'en',
       title: 'Simply amazing, highly recommend it!',
@@ -275,7 +276,7 @@
     },
     {
       reviewer: 'Ulrich, DE',
-      date: 'October 2024',
+      date: '2024-10',
       score: 10,
       originalLang: 'de',
       title: '',
@@ -297,7 +298,7 @@
     },
     {
       reviewer: 'Regina, GB',
-      date: 'September 2024',
+      date: '2024-09',
       score: 10,
       originalLang: 'en',
       title: 'Lovely place to stay in Lake Como',
@@ -319,7 +320,7 @@
     },
     {
       reviewer: 'Oleksandr, UA',
-      date: 'August 2024',
+      date: '2024-08',
       score: 10,
       originalLang: 'uk',
       title: 'Отдыхали на вилле семьёй, три поколения, все в восторге!',
@@ -345,7 +346,7 @@
     },
     {
       reviewer: 'James, US',
-      date: 'August 2024',
+      date: '2024-08',
       score: 10,
       originalLang: 'en',
       title: 'Old world villa with modern amenities awaits you to settle in, relax and find peace in a slice of paradise.',
@@ -367,7 +368,7 @@
     },
     {
       reviewer: 'Bruno, SC',
-      date: 'July 2023',
+      date: '2023-07',
       score: 9,
       originalLang: 'fr',
       title: 'Excellent séjour, quelque peu terni par un chantier à côté, heureusement temporaire. Merci à Simona.',
@@ -393,7 +394,7 @@
   const googleReviews = [
     {
       reviewer: 'Valerio Bellini',
-      date: 'July 2025',
+      date: '2025-07',
       score: 5,
       originalLang: 'en',
       text: 'Our stay at this stunning villa on Lake Como was simply perfect! The elegance of the property was evident in every detail, from the beautifully designed interiors to the meticulously maintained garden. The breathtaking view of the lake from the terrace was absolutely unforgettable — waking up to such a serene and picturesque scene was a dream come true.\n\nThe villa was fully equipped with everything we needed, and we were especially impressed by the thoughtful inclusion of all the essentials for our daughter. It truly made traveling with a little one so much easier and stress-free.\n\nThis vacation was nothing short of fantastic, and we would highly recommend this extraordinary villa to anyone looking for a luxurious and relaxing getaway. We can\u2019t wait to return!',
@@ -414,7 +415,7 @@
     },
     {
       reviewer: 'Jim Richards',
-      date: 'July 2025',
+      date: '2025-07',
       score: 5,
       originalLang: 'en',
       text: 'This villa is a gloriously peaceful home on the banks of Lake Como, situated in prime location for walking to Tremezzo or hoping the ferry for a 10 minute ride to Bellagio. The house is a classic Italian lake villa with modern amenities and a gracious host. We were so pleased to have chosen this spot for our stay in this area.\n\nCadenabbia is less hectic than most of the other lake villages and perfect for strolls on the lake shore, or a visit to the gardens at Villa Carlotta. We found plenty of places to sit and eat while enjoying the lovely lake views. The house had ample space for our party of 7. Highly recommended.',
@@ -435,7 +436,7 @@
     },
     {
       reviewer: 'Elena K.',
-      date: 'July 2025',
+      date: '2025-07',
       score: 5,
       originalLang: 'de',
       text: 'Unser Urlaubsgef\u00fchl begann mit den bunten Blumen und der angenehm duftenden Morgenluft. Vom Balkon aus erhielten wir einen fantastischen Blick auf den Comer See. Die liebevoll restaurierten R\u00e4umlichkeiten der Villa \u00fcbertrafen unsere hohen Erwartungen.\nDer direkte Zugang \u00fcber den Garten zur Promenade rundete unseren positiven Eindruck ab. Wir kommen auf jeden Fall wieder!',
@@ -456,7 +457,7 @@
     },
     {
       reviewer: 'Thorben Wulff',
-      date: 'January 2026',
+      date: '2026-01',
       score: 5,
       originalLang: 'de',
       text: 'Wundersch\u00f6ne Villa mit fantastischem Blick auf den Comer See! Wundervoll eingerichtet und sehr freundliche Gastgeber!',
@@ -481,7 +482,7 @@
   const airbnbReviews = [
     {
       reviewer: 'Mebrat And Assefa',
-      date: 'June 2026',
+      date: '2026-06',
       score: 5,
       originalLang: 'en',
       text: 'Villa Caterina, is very beautiful with a stunning view of the mountains and the lake! Highly recommend it and if I come back to Lake Como it will be my first choice! Great for families, all will be very comfortable, lots of space. The place exceeded my expectations! Thank you!',
@@ -502,7 +503,7 @@
     },
     {
       reviewer: 'Julie',
-      date: 'April 2026',
+      date: '2026-04',
       score: 4,
       originalLang: 'fr',
       text: 'La maison est magnifique et très spacieuse. Les équipements (électroménager et literies) sont de grande qualité, la décoration soignée et le ménage parfait. Se réveiller le matin avec la vue du lac est un vrai plaisir. Nous avons passé un très agréable séjour. Pour les enfants il y a une superbe aire de jeux à 2 min à pieds et les propriétaires nous ont mis à disposition chaise haute et lit bébé. Il y a également une pizzeria et une supérette à 2min de la maison, c\'est très pratique.\nPetite déception, il est mis en avant dans l\'annonce que l\'embarcadère du ferry se trouve à 200 mètres ce qui a contribué à notre choix de location, malheureusement le port est fermé depuis un moment car de gros travaux sont en cours, nous aurions aimé être prévenus.',
@@ -523,7 +524,7 @@
     },
     {
       reviewer: 'Parul',
-      date: 'April 2026',
+      date: '2026-04',
       score: 5,
       originalLang: 'en',
       text: 'Beautiful home, we enjoyed our stay. Hosts attended to all our requests.',
@@ -554,6 +555,9 @@
     en: 'English', it: 'Italian', de: 'German', fr: 'French', pl: 'Polish', da: 'Danish', uk: 'Ukrainian'
   };
 
+  var FALLBACK_MONTHS = ['January','February','March','April','May','June',
+                         'July','August','September','October','November','December'];
+
   function langName(code) {
     if (I18N && I18N.langNames && I18N.langNames[code]) return I18N.langNames[code];
     return FALLBACK_LANG_NAMES[code] || code;
@@ -578,6 +582,14 @@
   function scoreToStars(score) {
     // Booking.com score is out of 10 → convert to 5-star scale
     return Math.round(score / 2);
+  }
+
+  /** '2026-07' -> 'July 2026', in the page language. */
+  function formatReviewDate(ym) {
+    var parts = String(ym).split('-');
+    var months = (I18N && I18N.months) ? I18N.months : FALLBACK_MONTHS;
+    var name = months[parseInt(parts[1], 10) - 1];
+    return name ? name + ' ' + parts[0] : String(ym);
   }
 
   /** Combine title + text the way the card displays them. */
@@ -665,7 +677,7 @@
     name.textContent = review.reviewer;
 
     var date = document.createElement('span');
-    date.textContent = review.date;
+    date.textContent = formatReviewDate(review.date);
 
     footer.appendChild(name);
     footer.appendChild(date);
