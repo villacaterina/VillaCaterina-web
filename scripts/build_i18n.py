@@ -15,6 +15,7 @@ Run after editing any root page:  python3 scripts/build_i18n.py
 The root pages themselves are the single source of truth for structure.
 """
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -381,6 +382,83 @@ def inject_social_meta(html: str, page: str, lang: str) -> str:
     return html.replace(marker, social_meta_block(html, page, lang) + '\n' + marker, 1)
 
 
+def aggregate_rating() -> tuple:
+    """
+    (rating out of 5, review count) read straight out of js/reviews.js.
+
+    Parsed from the data rather than hardcoded so the structured data can never
+    disagree with the scores the reviews page actually renders. Booking.com
+    scores are out of 10 and are halved onto the 5-point scale the other two
+    platforms use.
+    """
+    src = (ROOT / 'js' / 'reviews.js').read_text(encoding='utf-8')
+
+    total, count = 0.0, 0
+    for name, out_of in [('bookingReviews', 10), ('googleReviews', 5), ('airbnbReviews', 5)]:
+        block = re.search(r'const ' + name + r' = \[.*?\n  \];', src, re.S)
+        if not block:
+            raise SystemExit(f'build_i18n: could not find {name} in js/reviews.js')
+        scores = [float(m) for m in re.findall(r'score: ([\d.]+)', block.group(0))]
+        total += sum(s * 5 / out_of for s in scores)
+        count += len(scores)
+
+    if not count:
+        raise SystemExit('build_i18n: no review scores found in js/reviews.js')
+    return round(total / count, 2), count
+
+
+def structured_data_block(lang: str) -> str:
+    """
+    JSON-LD describing the property, so Google can show the star rating.
+
+    A <script type="application/ld+json"> is a data block, never executed, so
+    the strict `script-src 'self'` CSP does not apply to it (verified in-browser).
+    Only the home page carries it — one primary entity per site.
+    """
+    rating, count = aggregate_rating()
+    data = {
+        '@context': 'https://schema.org',
+        '@type': 'LodgingBusiness',
+        'name': SITE_NAME,
+        'url': page_url('index.html', lang),
+        'image': OG_IMAGE,
+        'address': {
+            '@type': 'PostalAddress',
+            'streetAddress': '14 Via Roma',
+            'postalCode': '22011',
+            'addressLocality': 'Griante Cadenabbia',
+            'addressRegion': 'CO',
+            'addressCountry': 'IT',
+        },
+        'email': 'villacaterina2020@gmail.com',
+        # Keep in step with getNightRate() in js/booking.js.
+        'priceRange': '\u20ac500-\u20ac720',
+        'numberOfRooms': 3,
+        'petsAllowed': False,
+        'sameAs': [
+            'https://www.facebook.com/people/Villa-Caterina-Cadenabbia-Lake-Como/61561644387595/',
+            'https://www.instagram.com/villacaterinagriante/',
+        ],
+        'aggregateRating': {
+            '@type': 'AggregateRating',
+            'ratingValue': rating,
+            'reviewCount': count,
+            'bestRating': 5,
+            'worstRating': 1,
+        },
+    }
+    body = json.dumps(data, indent=2, ensure_ascii=False)
+    body = '\n'.join('  ' + line for line in body.split('\n'))
+    return '  <script type="application/ld+json">\n' + body + '\n  </script>'
+
+
+def inject_structured_data(html: str, page: str, lang: str) -> str:
+    if page != 'index.html':
+        return html
+    marker = '  <link rel="icon"'
+    return html.replace(marker, structured_data_block(lang) + '\n' + marker, 1)
+
+
 def lang_switch_block(page: str, active: str) -> str:
     """Language switcher markup. Uses root-absolute URLs so it works from any depth."""
     parts = []
@@ -440,6 +518,7 @@ def build_translation(src: str, page: str, lang: str) -> str:
         html = html.replace(old, new)
     # After the replacements: og:title / og:description read the translated text.
     html = inject_social_meta(html, page, lang)
+    html = inject_structured_data(html, page, lang)
     html = rewrite_paths(html)
     html = inject_lang_switch(html, page, lang)
     html = inject_i18n_script(html, '../')
@@ -457,6 +536,8 @@ def update_root_page(src: str, page: str) -> str:
         html = inject_i18n_script(html, '')
     if 'og:title' not in html:
         html = inject_social_meta(html, page, 'en')
+    if 'application/ld+json' not in html:
+        html = inject_structured_data(html, page, 'en')
     return html
 
 
@@ -482,6 +563,9 @@ def main() -> int:
         base = re.sub(r'  <link rel="canonical"[^\n]*\n', '', base)
         base = re.sub(r'  <meta property="og:[^\n]*\n', '', base)
         base = re.sub(r'  <meta name="twitter:[^\n]*\n', '', base)
+        base = re.sub(
+            r'  <script type="application/ld\+json">.*?</script>\n', '', base, flags=re.S
+        )
         base = re.sub(r'\s*<div class="lang-switch">.*?</div>', '', base)
         base = base.replace('<script src="js/i18n.js"></script>\n  ', '')
 
