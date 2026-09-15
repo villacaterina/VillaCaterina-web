@@ -204,7 +204,7 @@
       const easeOut = 1 - Math.pow(1 - progress, 3);
       const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOut);
       
-      $priceAmount.textContent = `€${currentValue.toLocaleString('en-US')}`;
+      $priceAmount.textContent = `€${currentValue.toLocaleString(LOCALE)}`;
       
       if (progress < 1) {
         requestAnimationFrame(update);
