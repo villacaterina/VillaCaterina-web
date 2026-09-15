@@ -9,7 +9,8 @@ English HTML:
   3. injects hreflang alternate links
   4. replaces visible English strings with translations
 
-Review texts (injected by js/reviews.js) are intentionally NOT translated.
+Review texts are NOT handled here — js/reviews.js carries its own per-review
+translations and picks one at runtime from <html lang>.
 
 Run after editing any root page:  python3 scripts/build_i18n.py
 The root pages themselves are the single source of truth for structure.
@@ -214,7 +215,8 @@ PAGE_STRINGS = {
     },
 
     'reviews.html': {
-        # NOTE: review texts themselves are injected by js/reviews.js and stay in English.
+        # NOTE: only the page chrome is translated here. The review texts are
+        # injected and translated at runtime by js/reviews.js.
         'it': [
             ('<title>Reviews - Villa Caterina</title>', '<title>Recensioni - Villa Caterina</title>'),
             ('content="Guest reviews for Villa Caterina on Lake Como. What our visitors say about their stay."',
