@@ -78,7 +78,7 @@
       // Reviews page
       showOriginal: 'Show original ({lang})',
       showTranslation: 'Show translation ({lang})',
-      langNames: { en: 'English', it: 'Italian', de: 'German', fr: 'French', pl: 'Polish', da: 'Danish', uk: 'Ukrainian' },
+      langNames: { en: 'English', it: 'Italian', de: 'German', fr: 'French', pl: 'Polish', da: 'Danish', uk: 'Ukrainian', ru: 'Russian' },
     },
 
     it: {
@@ -144,7 +144,7 @@
       // Reviews page
       showOriginal: 'Mostra originale ({lang})',
       showTranslation: 'Mostra traduzione ({lang})',
-      langNames: { en: 'Inglese', it: 'Italiano', de: 'Tedesco', fr: 'Francese', pl: 'Polacco', da: 'Danese', uk: 'Ucraino' },
+      langNames: { en: 'Inglese', it: 'Italiano', de: 'Tedesco', fr: 'Francese', pl: 'Polacco', da: 'Danese', uk: 'Ucraino', ru: 'Russo' },
     },
 
     fr: {
@@ -210,7 +210,7 @@
       // Reviews page
       showOriginal: 'Afficher l\u2019original ({lang})',
       showTranslation: 'Afficher la traduction ({lang})',
-      langNames: { en: 'Anglais', it: 'Italien', de: 'Allemand', fr: 'Français', pl: 'Polonais', da: 'Danois', uk: 'Ukrainien' },
+      langNames: { en: 'Anglais', it: 'Italien', de: 'Allemand', fr: 'Français', pl: 'Polonais', da: 'Danois', uk: 'Ukrainien', ru: 'Russe' },
     },
 
     de: {
@@ -276,7 +276,7 @@
       // Reviews page
       showOriginal: 'Original anzeigen ({lang})',
       showTranslation: 'Übersetzung anzeigen ({lang})',
-      langNames: { en: 'Englisch', it: 'Italienisch', de: 'Deutsch', fr: 'Französisch', pl: 'Polnisch', da: 'Dänisch', uk: 'Ukrainisch' },
+      langNames: { en: 'Englisch', it: 'Italienisch', de: 'Deutsch', fr: 'Französisch', pl: 'Polnisch', da: 'Dänisch', uk: 'Ukrainisch', ru: 'Russisch' },
     },
   };
 

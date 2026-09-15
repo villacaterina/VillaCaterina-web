@@ -322,7 +322,9 @@
       reviewer: 'Oleksandr, UA',
       date: '2024-08',
       score: 10,
-      originalLang: 'uk',
+      // originalLang is the language of the text, which is Russian here.
+      // It is independent of `reviewer`, which is the guest's own country tag.
+      originalLang: 'ru',
       title: 'Отдыхали на вилле семьёй, три поколения, все в восторге!',
       text: 'Великолепный вид, комфортная вилла, хозяева продумали всё до мелочей! Большое им спасибо!',
       translations: {
@@ -552,7 +554,8 @@
   var PAGE_LANG = I18N ? I18N.lang : 'en';
 
   var FALLBACK_LANG_NAMES = {
-    en: 'English', it: 'Italian', de: 'German', fr: 'French', pl: 'Polish', da: 'Danish', uk: 'Ukrainian'
+    en: 'English', it: 'Italian', de: 'German', fr: 'French',
+    pl: 'Polish', da: 'Danish', uk: 'Ukrainian', ru: 'Russian'
   };
 
   var FALLBACK_MONTHS = ['January','February','March','April','May','June',
