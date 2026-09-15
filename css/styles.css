@@ -558,36 +558,34 @@ main {
   z-index: 1;
 }
 
+/* Unavailable days stay flat — only bookable ones get a background. */
 .cal-cell.past,
-.cal-cell.blocked {
+.cal-cell.blocked,
+.cal-cell.closed {
   background: transparent;
-  color: rgba(156, 163, 175, 0.5);
   cursor: not-allowed;
-  text-decoration: line-through;
 }
 
+.cal-cell.past {
+  color: rgba(156, 163, 175, 0.5);
+}
+
+/* Warm enough to read as taken, quiet enough not to look like an error. */
 .cal-cell.blocked {
-  background: rgba(239, 68, 68, 0.12);
-  color: rgba(220, 38, 38, 0.75);
-}
-
-.cal-cell.blocked .cal-daynum {
-  background: rgba(239, 68, 68, 0.18);
+  color: rgba(171, 118, 116, 0.85);
 }
 
 .cal-cell.closed {
-  background: transparent;
   color: rgba(100, 116, 139, 0.45);
-  cursor: not-allowed;
 }
 
 .cal-cell.available {
-  background: rgba(34, 197, 94, 0.08); 
+  background: rgba(34, 197, 94, 0.1);
   color: var(--color-success);
 }
 
 .cal-cell.available:hover {
-  background: rgba(34, 197, 94, 0.15); 
+  background: rgba(34, 197, 94, 0.18);
   transform: scale(1.08);
 }
 
@@ -656,7 +654,8 @@ main {
 }
 
 .cal-legend .dot-blocked {
-  background: rgba(239, 68, 68, 0.12);
+  background: transparent;
+  border: 1px solid rgba(171, 118, 116, 0.55);
 }
 
 .cal-legend .dot-closed {
@@ -1785,11 +1784,7 @@ main {
   background: rgba(16, 185, 129, 0.22);
 }
 [data-theme="dark"] .cal-cell.blocked {
-  background: rgba(248, 113, 113, 0.14);
-  color: rgba(248, 113, 113, 0.85);
-}
-[data-theme="dark"] .cal-cell.blocked .cal-daynum {
-  background: rgba(248, 113, 113, 0.20);
+  color: rgba(208, 148, 145, 0.8);
 }
 [data-theme="dark"] .cal-cell.in-range {
   background: rgba(212, 165, 116, 0.15);
@@ -1812,7 +1807,8 @@ main {
   border-color: rgba(16, 185, 129, 0.4);
 }
 [data-theme="dark"] .cal-legend .dot-blocked {
-  background: rgba(248, 113, 113, 0.18);
+  background: transparent;
+  border: 1px solid rgba(208, 148, 145, 0.5);
 }
 [data-theme="dark"] .cal-legend .dot-range {
   background: rgba(212, 165, 116, 0.22);
