@@ -541,6 +541,47 @@ def update_root_page(src: str, page: str) -> str:
     return html
 
 
+def write_sitemap() -> None:
+    """
+    sitemap.xml for every page in every language, each entry listing its
+    translations as xhtml:link alternates. Generated from PAGES/LANGS so it
+    cannot drift from the pages that actually exist.
+    """
+    out = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+        '        xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+    ]
+    for page in PAGES:
+        for lang in ALL_LANGS:
+            out.append('  <url>')
+            out.append(f'    <loc>{page_url(page, lang)}</loc>')
+            for alt in ALL_LANGS:
+                out.append(
+                    f'    <xhtml:link rel="alternate" hreflang="{alt}" '
+                    f'href="{page_url(page, alt)}"/>'
+                )
+            out.append(
+                '    <xhtml:link rel="alternate" hreflang="x-default" '
+                f'href="{page_url(page, "en")}"/>'
+            )
+            out.append('  </url>')
+    out.append('</urlset>')
+    (ROOT / 'sitemap.xml').write_text('\n'.join(out) + '\n', encoding='utf-8')
+    print(f'wrote sitemap.xml ({len(PAGES) * len(ALL_LANGS)} urls)')
+
+
+def write_robots() -> None:
+    txt = (
+        'User-agent: *\n'
+        'Allow: /\n'
+        '\n'
+        f'Sitemap: {BASE_URL}/sitemap.xml\n'
+    )
+    (ROOT / 'robots.txt').write_text(txt, encoding='utf-8')
+    print('wrote robots.txt')
+
+
 def main() -> int:
     for lg in LANGS:
         (ROOT / lg).mkdir(exist_ok=True)
@@ -574,6 +615,9 @@ def main() -> int:
             out_path = ROOT / lg / page
             out_path.write_text(out, encoding='utf-8')
             print(f'wrote {lg}/{page}')
+
+    write_sitemap()
+    write_robots()
 
     return 0
 
