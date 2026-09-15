@@ -18,6 +18,10 @@ credentials.*
 *.swo
 *~
 
+# Python
+__pycache__/
+*.pyc
+
 # Node (if you add build tools later)
 node_modules/
 dist/
