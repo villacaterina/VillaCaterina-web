@@ -16,6 +16,21 @@
   let pendingSwap = null;
   const totalImages = thumbs.length;
 
+  // <source> wins over img.src, so the whole <picture> has to be updated.
+  // Sibling formats share the JPEG's path — see scripts/build_images.py.
+  const picture = mainImg.closest('picture');
+
+  function showImage(jpgPath) {
+    if (picture) {
+      const base = jpgPath.replace(/\.jpg$/, '');
+      picture.querySelectorAll('source').forEach(source => {
+        const ext = source.type === 'image/avif' ? '.avif' : '.webp';
+        source.srcset = base + ext;
+      });
+    }
+    mainImg.src = jpgPath;
+  }
+
   /**
    * Update the main image with fade transition.
    * currentIndex moves before the timeout — clicking faster than the fade used
@@ -37,7 +52,7 @@
     pendingSwap = setTimeout(() => {
       pendingSwap = null;
       const thumb = thumbs[index];
-      mainImg.src = thumb.dataset.src;
+      showImage(thumb.dataset.src);
       mainImg.alt = thumb.dataset.alt;
       mainImg.classList.remove('fade');
 

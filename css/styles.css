@@ -9,6 +9,12 @@
   box-sizing: border-box;
 }
 
+/* Keep <picture> out of the box tree so the <img> still sizes against the
+   real parent — otherwise its percentage height has nothing to resolve to. */
+picture {
+  display: contents;
+}
+
 :root {
   --color-bg: #fdfcf9;
   --color-text: #1a1a1a;

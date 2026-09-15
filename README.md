@@ -9,6 +9,7 @@ Live: [villacaterina.casa](https://villacaterina.casa)
 Zero-dependency static site. No frameworks, no build tools, no bundlers.
 
 - Vanilla HTML, CSS, and JavaScript
+- Photos served as AVIF/WebP with a JPEG fallback (see "Regenerate image formats")
 - Hosted on **GitHub Pages** with a custom domain (`villacaterina.casa`) proxied via Zone.eu
 - Translated into Italian, French, and German (generated pages)
 
@@ -33,6 +34,8 @@ Zero-dependency static site. No frameworks, no build tools, no bundlers.
 ├── assets/             # Images
 ├── scripts/
 │   ├── build_i18n.py   # Generates the translated pages, sitemap.xml, robots.txt
+│   ├── build_images.py # Generates the AVIF and WebP variants
+│   ├── avif_encode.swift     # AVIF encoder used by build_images.py
 │   └── sync_availability.py  # Fetches Booking.com iCal → availability.json
 ├── .github/workflows/availability.yml  # Cron job for availability sync
 ├── CNAME               # Custom domain for GitHub Pages
@@ -91,6 +94,22 @@ cards are sorted newest-first.
 
 Add `featured: true` to put a review on the home page. Platform averages and the
 `aggregateRating` in the structured data are computed from the scores.
+
+### Regenerate image formats
+
+After adding or replacing a photo in `assets/`:
+
+```bash
+python3 scripts/build_images.py
+```
+
+Writes `photo.avif` and `photo.webp` next to each `photo.jpg`, skipping anything
+already up to date. Pages serve them through `<picture>` — AVIF, then WebP, then
+the JPEG — so older browsers still get a working image. `js/gallery.js` relies on
+the three files sharing one path when it swaps the main photo.
+
+Needs `cwebp` (`brew install webp`) and `swiftc` for the AVIF encoder, which uses
+the system ImageIO via `scripts/avif_encode.swift`.
 
 ### Sync availability (manual)
 

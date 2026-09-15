@@ -124,7 +124,11 @@
 
   <main>
     <section class="contact-hero">
-      <img src="assets/lake.jpg" alt="Lake Como" class="contact-hero-image" fetchpriority="high">
+      <picture>
+        <source type="image/avif" srcset="assets/lake.avif">
+        <source type="image/webp" srcset="assets/lake.webp">
+        <img src="assets/lake.jpg" alt="Lake Como" class="contact-hero-image" fetchpriority="high">
+      </picture>
       <div class="contact-hero-overlay">
         <h1>Get in Touch</h1>
       </div>

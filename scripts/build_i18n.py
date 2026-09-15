@@ -471,6 +471,7 @@ def rewrite_paths(html: str) -> str:
     html = html.replace('src="assets/', 'src="../assets/')
     html = html.replace('href="assets/', 'href="../assets/')
     html = html.replace('data-src="assets/', 'data-src="../assets/')
+    html = html.replace('srcset="assets/', 'srcset="../assets/')
     return html
 
 
