@@ -1494,6 +1494,8 @@ main {
   line-height: 1.7;
   margin-bottom: 1.5rem;
   font-style: italic;
+  /* Some reviews contain blank lines between paragraphs — keep them. */
+  white-space: pre-line;
 }
 
 /* "Show original / Show translation" toggle on translated reviews */
