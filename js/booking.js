@@ -211,7 +211,9 @@
 
     function update(currentTime) {
       const elapsed = currentTime - start;
-      const progress = Math.min(elapsed / duration, 1);
+      // rAF reports the frame's start, which can predate `start` — without the
+      // lower clamp the eased value overshoots and flashes a negative price.
+      const progress = Math.min(Math.max(elapsed / duration, 0), 1);
 
       if (progress >= 1) {
         setPriceText(targetValue);
