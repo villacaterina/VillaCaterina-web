@@ -555,6 +555,26 @@ main {
   color: var(--color-text);
 }
 
+/*
+ * A booked / off-season day while the user is picking a check-out date.
+ * A check-out day is not a night, so leaving on one is fine — show it as
+ * clickable without claiming the day itself is available.
+ */
+.cal-cell.checkout-eligible {
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--color-accent);
+  opacity: 1;
+}
+
+.cal-cell.checkout-eligible .cal-daynum {
+  border: 1px dashed var(--color-accent);
+}
+
+.cal-cell.checkout-eligible:hover {
+  transform: scale(1.08);
+}
+
 .cal-legend {
   display: flex;
   gap: 1rem;
@@ -1664,6 +1684,12 @@ main {
 }
 [data-theme="dark"] .cal-cell.past {
   color: rgba(148, 163, 184, 0.4);
+}
+[data-theme="dark"] .cal-cell.checkout-eligible {
+  color: var(--color-accent-light);
+}
+[data-theme="dark"] .cal-cell.checkout-eligible .cal-daynum {
+  border-color: var(--color-accent-light);
 }
 
 [data-theme="dark"] .cal-legend .dot-available {

@@ -30,6 +30,7 @@
       loading: 'Loading availability...',
       calLoadFailed: '⚠ Live availability could not be loaded. Some dates shown as available may already be booked.',
       alreadyBooked: 'Already booked',
+      checkoutOnly: 'Available as a check-out date only',
       closedTooltip: 'Closed season (November–March)',
 
       // Booking engine
@@ -97,6 +98,7 @@
       loading: 'Caricamento disponibilità...',
       calLoadFailed: '⚠ Impossibile caricare la disponibilità in tempo reale. Alcune date mostrate come libere potrebbero essere già prenotate.',
       alreadyBooked: 'Già prenotato',
+      checkoutOnly: 'Disponibile solo come data di check-out',
       closedTooltip: 'Stagione chiusa (novembre–marzo)',
 
       btnSelectDates: 'Seleziona le date',
@@ -162,6 +164,7 @@
       loading: 'Chargement des disponibilités...',
       calLoadFailed: '⚠ Impossible de charger les disponibilités en temps réel. Certaines dates affichées comme libres peuvent déjà être réservées.',
       alreadyBooked: 'Déjà réservé',
+      checkoutOnly: 'Disponible uniquement comme date de départ',
       closedTooltip: 'Saison fermée (novembre–mars)',
 
       btnSelectDates: 'Sélectionnez les dates',
@@ -227,6 +230,7 @@
       loading: 'Verfügbarkeit wird geladen...',
       calLoadFailed: '⚠ Live-Verfügbarkeit konnte nicht geladen werden. Als frei angezeigte Daten könnten bereits gebucht sein.',
       alreadyBooked: 'Bereits gebucht',
+      checkoutOnly: 'Nur als Abreisedatum verfügbar',
       closedTooltip: 'Geschlossene Saison (November–März)',
 
       btnSelectDates: 'Daten auswählen',

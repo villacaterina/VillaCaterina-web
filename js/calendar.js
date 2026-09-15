@@ -63,8 +63,18 @@
     return window.blockedDates !== undefined && window.blockedDates.has(dateKey(d));
   }
 
-  function isAvailable(d) {
-    return !isPast(d) && !isClosedSeason(d) && !isBlocked(d);
+  /**
+   * A check-out day is not a night, so a day that is booked or out of season is
+   * still a legitimate day to leave on: Oct 29 -> Nov 1 is three in-season
+   * nights, and leaving on the day the next guest arrives occupies nothing.
+   * booking.js already prices and availability-checks the half-open range
+   * [check-in, check-out), so only the calendar needs to allow the click.
+   */
+  function isCheckoutCandidate(d) {
+    return selectionState === MODE_CHECKOUT
+      && checkinDate !== null
+      && !isPast(d)
+      && d > checkinDate;
   }
 
   function sameDay(a, b) {
@@ -196,18 +206,31 @@
         cell.classList.add('out-of-month');
       } else {
         cell.innerHTML = `<span class="cal-daynum">${cellDate.getDate()}</span>`;
-        const avail = isAvailable(cellDate);
+
+        let selectable = false;
 
         if (isPast(cellDate)) {
           cell.classList.add('past');
-        } else if (isBlocked(cellDate)) {
-          cell.classList.add('blocked');
-          cell.title = T('alreadyBooked');
-        } else if (isClosedSeason(cellDate)) {
-          cell.classList.add('closed');
-          cell.title = T('closedTooltip');
+        } else if (isBlocked(cellDate) || isClosedSeason(cellDate)) {
+          if (isBlocked(cellDate)) {
+            cell.classList.add('blocked');
+            cell.title = T('alreadyBooked');
+          } else {
+            cell.classList.add('closed');
+            cell.title = T('closedTooltip');
+          }
+
+          // Unavailable as a night, but still a valid day to check out on.
+          // Recomputed every render, so once a range is set these go inert
+          // again — such a day can never become a check-in.
+          if (isCheckoutCandidate(cellDate)) {
+            cell.classList.add('checkout-eligible');
+            cell.title = T('checkoutOnly');
+            selectable = true;
+          }
         } else {
           cell.classList.add('available');
+          selectable = true;
 
           // Highlight selected range
           if (sameDay(cellDate, checkinDate) || sameDay(cellDate, checkoutDate)) {
@@ -215,11 +238,11 @@
           } else if (checkinDate && checkoutDate
             && cellDate > checkinDate && cellDate < checkoutDate) {
             cell.classList.add('in-range');
-          } else if (checkinDate && !checkoutDate && cellDate > checkinDate) {
-            // Preview hover: not implemented (would need mouseenter)
           }
+        }
 
-          cell.addEventListener('click', () => handleDateClick(new Date(cellDate)));
+        if (selectable) {
+          makeSelectable(cell, cellDate);
         }
       }
 
@@ -233,6 +256,12 @@
   // ──────────────────────────────────────────────
   // INTERACTION
   // ──────────────────────────────────────────────
+
+  /** Make a day cell pick a date when activated. */
+  function makeSelectable(cell, cellDate) {
+    const picked = new Date(cellDate);
+    cell.addEventListener('click', () => handleDateClick(new Date(picked)));
+  }
 
   function handleDateClick(d) {
     if (selectionState === MODE_CHECKIN) {
