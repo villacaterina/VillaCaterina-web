@@ -35,7 +35,6 @@ Zero-dependency static site. No frameworks, no build tools, no bundlers.
 ├── scripts/
 │   ├── build_i18n.py   # Generates the translated pages, sitemap.xml, robots.txt
 │   ├── build_images.py # Generates the AVIF and WebP variants
-│   ├── avif_encode.swift     # AVIF encoder used by build_images.py
 │   └── sync_availability.py  # Fetches Booking.com iCal → availability.json
 ├── .github/workflows/availability.yml  # Cron job for availability sync
 ├── CNAME               # Custom domain for GitHub Pages
@@ -108,8 +107,9 @@ already up to date. Pages serve them through `<picture>` — AVIF, then WebP, th
 the JPEG — so older browsers still get a working image. `js/gallery.js` relies on
 the three files sharing one path when it swaps the main photo.
 
-Needs `cwebp` (`brew install webp`) and `swiftc` for the AVIF encoder, which uses
-the system ImageIO via `scripts/avif_encode.swift`.
+Needs `avifenc` and `cwebp` (`brew install libavif webp`). The AVIF comes from
+libavif rather than macOS's built-in encoder, which splits large photos into a
+grid of tiles that Firefox cannot display.
 
 ### Sync availability (manual)
 
