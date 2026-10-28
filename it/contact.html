@@ -183,12 +183,12 @@
 
             <div class="form-field">
               <label for="form-name">Il tuo nome</label>
-              <input type="text" id="form-name" name="name" required>
+              <input type="text" id="form-name" name="name" autocomplete="name" required>
             </div>
 
             <div class="form-field">
               <label for="form-email">Il tuo indirizzo email</label>
-              <input type="email" id="form-email" name="email" required>
+              <input type="email" id="form-email" name="email" autocomplete="email" required>
             </div>
 
             <div class="form-field">
@@ -211,7 +211,7 @@
 
             <button type="submit" class="btn-primary btn-full">Invia richiesta</button>
 
-            <div id="form-feedback" class="form-feedback"></div>
+            <div id="form-feedback" class="form-feedback" role="status" aria-live="polite"></div>
           </form>
         </div>
       </div>
