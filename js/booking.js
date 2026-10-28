@@ -231,7 +231,7 @@
 
   // Backgrounding mid-animation stops the counter; snap it on return.
   document.addEventListener('visibilitychange', function () {
-    if (!document.hidden && $priceDisplay.style.display === 'block') {
+    if (!document.hidden && !$priceDisplay.hidden) {
       setPriceText(prevPrice);
     }
   });
@@ -252,7 +252,7 @@
     if (!checkInStr || !checkOutStr) {
       $btn.disabled = true;
       $btn.textContent = T('btnSelectDates');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -267,7 +267,7 @@
       showMessage(T('msgFutureDate'), 'error');
       $btn.disabled = true;
       $btn.textContent = T('btnInvalidDates');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -275,7 +275,7 @@
       showMessage(T('msgOrder'), 'error');
       $btn.disabled = true;
       $btn.textContent = T('btnInvalidDates');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -285,7 +285,7 @@
       showMessage(T('msgMinStay', { min: CONFIG.MIN_STAY, n: nights, nightsWord: nightsWord(nights) }), 'error');
       $btn.disabled = true;
       $btn.textContent = T('btnTooShort');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -294,7 +294,7 @@
       showMessage(T('msgOpenSeason'), 'warning');
       $btn.disabled = true;
       $btn.textContent = T('btnClosedSeason');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -312,7 +312,7 @@
       showMessage(T('msgCrossSeason'), 'warning');
       $btn.disabled = true;
       $btn.textContent = T('btnClosedSeason');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -321,7 +321,7 @@
       showMessage(T('msgMinGuest'), 'error');
       $btn.disabled = true;
       $btn.textContent = T('btnInvalid');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -329,7 +329,7 @@
       showMessage(T('msgMaxGuests'), 'error');
       $btn.disabled = true;
       $btn.textContent = T('btnTooManyGuests');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -337,7 +337,7 @@
       showMessage(T('msgAdultRequired'), 'error');
       $btn.disabled = true;
       $btn.textContent = T('btnInvalid');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -348,7 +348,7 @@
       showMessage(T('msgClosedNights'), 'warning');
       $btn.disabled = true;
       $btn.textContent = T('btnClosedSeason');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -376,7 +376,7 @@
       );
       $btn.disabled = true;
       $btn.textContent = T('btnUnavailable');
-      $priceDisplay.style.display = 'none';
+      $priceDisplay.hidden = true;
       return;
     }
 
@@ -387,7 +387,7 @@
       animatePrice(newPrice);
       prevPrice = newPrice;
     }
-    $priceDisplay.style.display = 'block';
+    $priceDisplay.hidden = false;
     $priceBreakdown.textContent = T('breakdown', { nights: pricing.nights, from: formatDateHuman(checkIn), to: formatDateHuman(checkOut) });
 
     // ── Warn if availability data is missing ──
