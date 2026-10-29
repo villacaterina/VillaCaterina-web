@@ -471,7 +471,11 @@ def rewrite_paths(html: str) -> str:
     html = html.replace('src="assets/', 'src="../assets/')
     html = html.replace('href="assets/', 'href="../assets/')
     html = html.replace('data-src="assets/', 'data-src="../assets/')
-    html = html.replace('srcset="assets/', 'srcset="../assets/')
+    # A srcset lists several files, and the gallery's thumbnails carry theirs
+    # in data-avif / data-webp: every entry moves up, not just the first.
+    html = re.sub(r'(srcset|data-avif|data-webp)="([^"]*)"',
+                  lambda m: f'{m.group(1)}="' + re.sub(r'(^|,\s*)assets/', r'\1../assets/', m.group(2)) + '"',
+                  html)
     return html
 
 

@@ -107,9 +107,18 @@ already up to date. Pages serve them through `<picture>` — AVIF, then WebP, th
 the JPEG — so older browsers still get a working image. `js/gallery.js` relies on
 the three files sharing one path when it swaps the main photo.
 
-Needs `avifenc` and `cwebp` (`brew install libavif webp`). The AVIF comes from
-libavif rather than macOS's built-in encoder, which splits large photos into a
-grid of tiles that Firefox cannot display.
+Needs `avifenc`, `cwebp` and `dwebp` (`brew install libavif webp`). The AVIF
+comes from libavif rather than macOS's built-in encoder, which splits large
+photos into a grid of tiles that Firefox cannot display.
+
+Each photo is also written 640 px wide (`photo-640.avif`, `photo-640.webp`),
+and each `<source>` lists both sizes with their widths plus a `sizes` hint, so
+a phone takes the smaller copy wherever it fills the space: the gallery page
+dropped from 1.9 MB to 0.6-1.2 MB of images on a phone. When you add a photo,
+give its `<source>` tags the same shape, for example
+`srcset="assets/new-640.avif 640w, assets/new.avif 1280w"`; gallery thumbnails
+also carry their srcsets in `data-avif` / `data-webp`, which `js/gallery.js`
+puts on the main image.
 
 ### Sync availability (manual)
 
